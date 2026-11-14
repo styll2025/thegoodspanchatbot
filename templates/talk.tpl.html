@@ -1,0 +1,566 @@
+<title>The Good Span: your evaluation</title>
+<style>
+__BASE_STYLE__
+/* the conversational evaluation (/conversation): additions to the conversation page's own style */
+.top .pz{position:absolute;left:0;top:50%;transform:translateY(-50%)}
+/* the AI-written report on the page (its own styles come from core/report.js) */
+html.reporton .page,html.reporton .top .prog,html.reporton .top .pz{display:none!important}
+.report{max-width:760px;margin:0 auto;padding:24px 16px 72px}
+.rcmp{text-align:center;margin-top:20px}
+.btn.ghost{background:transparent;color:var(--plum)}
+.rback{position:fixed;z-index:30;right:16px;bottom:16px}
+/* phones: the Pause button sits beside the logo instead of over it */
+@media (max-width:640px){.top .in:has(.pz:not([hidden])){justify-content:space-between;gap:12px}.top .in:has(.pz:not([hidden])) .pz{position:static;transform:none;order:1}.top .in:has(.pz:not([hidden])) .prog{order:2}.top .in:has(.pz:not([hidden])) img{height:18px}}
+.pz button{font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:1px solid var(--plum);border-radius:999px;padding:7px 14px;cursor:pointer;color:var(--plum)}
+.stages{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.stages span{font-family:var(--ui);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);opacity:.45}
+.stages span.on{opacity:1;color:var(--plum)}
+.stages span.done{opacity:.8}
+.consent{display:grid;gap:12px;max-width:640px;font-size:15.3px}
+.consent label{display:flex;gap:10px;align-items:flex-start}
+.consent input{margin-top:4px;width:18px;height:18px;accent-color:var(--plum)}
+.consent a{color:var(--plum)}
+.wbtns{display:flex;gap:10px;flex-wrap:wrap}
+.card{background:var(--white);border-radius:18px;padding:16px 18px;display:grid;gap:10px;margin-left:40px;max-width:600px}
+.card h3{margin:0;font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:400}
+.card .it{display:grid;gap:6px;border-top:1px dotted var(--line);padding-top:8px}
+.card .it:first-of-type{border-top:0;padding-top:0}
+.card .q{font-size:13.5px;color:var(--muted)}
+.card .ev{font-size:12.6px;color:var(--muted);font-style:italic}
+.card .chips{padding-left:0}
+.card .act{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.tbl{display:grid;gap:12px}
+.tbl .r{display:grid;gap:6px}
+.tbl .r .lb{font-size:14.4px}
+.rev{background:var(--white);border-radius:24px;padding:22px 24px;display:grid;gap:16px;margin-top:8px}
+.rev h2{margin:0;font-weight:200;font-size:clamp(26px,3.6vw,34px);line-height:1.1}
+.rev .refl p{margin:0 0 10px}
+.rev details{border-top:1px dotted var(--line);padding-top:10px}
+.rev summary{cursor:pointer;font-family:var(--ui);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.rev dl{margin:8px 0 0;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:0 12px;align-items:start}
+.rev dt,.rev dd{padding:7px 0;border-bottom:1px dotted var(--line);font-size:13px;margin:0}
+.rev dt{color:var(--muted)}
+.rev .ch{font-family:var(--ui);font-size:10px;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:0;color:var(--plum);cursor:pointer;padding:7px 0;border-bottom:1px dotted var(--line)}
+.notice{background:var(--cream);border-radius:16px;padding:12px 16px;font-size:14px;margin-left:40px;max-width:600px}
+@media (max-width:560px){.card,.notice{margin-left:0}.rev dl{grid-template-columns:minmax(0,1fr) auto}.rev dt{grid-column:1/-1;border-bottom:0;padding-bottom:0}.stages{display:none}}
+</style>
+
+<header class="top"><div class="in">
+  <div class="pz" id="pz" hidden><button type="button" id="pause">Pause</button></div>
+  <img src="__LOGO__" alt="The Good Span">
+  <div class="prog" id="prog" hidden><span class="stages" id="stages"></span></div>
+</div></header>
+
+<div class="page">
+  <section class="welcome" id="welcome" aria-labelledby="wh">
+    <p class="kick">Welcome</p>
+    <h1 id="wh">Let's find your Good Span.</h1>
+    <p class="lead">We'll talk about your everyday health and wellbeing, what matters to you and the routines that shape how you feel. I'll ask some open questions and, where it helps us understand something accurately, a few more specific ones. It takes about 20 minutes. You can skip a question or pause and come back on this device.</p>
+    <p class="lead">Your answers help us prepare your personal Good Span. This isn't a medical assessment or a substitute for advice from a healthcare professional. Parts of this conversation are written by AI, and your Pilot reviews your Good Span with you.</p>
+    <div id="resume" class="wbtns" hidden><button class="btn" type="button" id="cont">Continue where I left off</button><button class="chip alt" type="button" id="fresh">Start again</button></div>
+    <form class="wform" id="wf" autocomplete="on">
+      <label>What would you like us to call you?<input id="nm" type="text" autocomplete="given-name" placeholder="Your first name" required></label>
+      <label>Your email address<input id="em" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+      <div class="consent">
+        <label><input type="checkbox" id="c1" required><span>I agree that my answers, including health information, are used to prepare my Good Span and shared with my Pilot. <a id="pn" href="#" target="_blank" rel="noopener">How we use your information</a></span></label>
+        <label><input type="checkbox" id="c2" required><span>I understand this evaluation isn't medical advice.</span></label>
+      </div>
+      <div class="wnav" style="justify-content:flex-start"><button class="btn" type="submit" id="go">Start</button></div>
+    </form>
+  </section>
+
+  <div class="wrap" id="chat" hidden>
+    <main class="thread" id="thread" aria-live="polite"></main>
+    <div class="comp" id="comp">
+      <div class="inrow" id="inrow">
+        <label for="txt" class="sr">Your answer</label>
+        <input id="txt" type="text" autocomplete="off" placeholder="Type your answer">
+        <button class="send" id="send" type="button" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
+      </div>
+      <p class="hint" id="hint"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+__QUESTIONS__
+</script>
+<script>
+__SLOTS__
+__EVIDENCE__
+__REPORT__
+__RESULT_JS__
+</script>
+<script>
+// ---- The conversational evaluation. Claude talks; this page keeps the checklist, the rules and the record.
+// Every stored answer is one of the canonical options for a question that applies (core/slots.js), with where it
+// came from. Safety and sensitive questions are always asked word for word. The rules (buildResult) work out what is
+// safe and allowed for this person; Claude writes their report from it (core/report.js checks it), or the rules' own
+// Good Span is shown.
+const SYM = "__SYM__", IMG = __IMG__, VERSIONS = __VERSIONS__;
+const API = { talk: window.GS_TALK_URL || '/api/converse', report: window.GS_REPORT_URL || '/api/report', story: window.GS_STORY_URL || '' };
+const SHEET_URL = window.GS_SHEET_URL || '', SHEET_KEY = window.GS_SHEET_KEY || '';
+const PRIVACY_URL = window.GS_PRIVACY_URL || '';
+const KEY = 'gs_conversation_v1';
+const S = GSSlots;
+const $ = id => document.getElementById(id), T = $('thread');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+const label = o => String(o).replace(/^(Nutrition|Sleep|Movement|Mind|Connection|Prevention) - .*/, '$1');
+const STAGE_TITLE = Object.fromEntries(SECTIONS.map(s => [s.id, s.title]));
+const AREA_OF = { nutrition: 'Nutrition', sleep: 'Sleep', movement: 'Movement', mind: 'Mind', connection: 'Connection', prevention: 'Prevention' };
+
+// ---- the session: saved after every step, so the member can pause and come back on this device
+let st = null, aiOn = true, busy = false, waiting = null;
+const newId = () => 'GS-' + Array.from(crypto.getRandomValues(new Uint8Array(6)), b => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b % 32]).join('');
+function fresh(contact) {
+  return { v: 1, id: newId(), versions: VERSIONS, started: new Date().toISOString(), state: 'active', consent: { at: new Date().toISOString(), text: 'answers used for Good Span and shared with Pilot; not medical advice' },
+    contact, A: {}, skipped: [], facts: {}, notes: [], history: [], stage: 'focus', openDone: {}, urgent: [], log: [] };
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
+function setState(to) { if (st.state !== to) { st.log.push({ at: new Date().toISOString(), from: st.state, to }); st.state = to; } save(); }
+
+// ---- the thread
+function bubble(html, kind) { const d = document.createElement('div'); d.className = 'msg ' + (kind || 'say'); d.innerHTML = `<div class="av"><img src="${SYM}" alt=""></div><div class="bub">${html}</div>`; T.append(d); scrollEnd(); return d; }
+function guide(text, kind) { st.history.push({ role: 'guide', text }); save(); return bubble(esc(text), kind || 'q'); }
+function me(text) { const d = document.createElement('div'); d.className = 'msg me'; d.innerHTML = `<div class="bub">${esc(text)}</div>`; T.append(d); scrollEnd(); st.history.push({ role: 'member', text }); save(); }
+function notice(text) { const d = document.createElement('div'); d.className = 'notice'; d.textContent = text; T.append(d); scrollEnd(); }
+async function typing(ms) { const d = bubble('<span class="thinking">…</span>', 'say typing'); await sleep(ms || 450); d.remove(); }
+function scrollEnd() { requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: reduce ? 'auto' : 'smooth' })); }
+function composer(on, hint) { $('inrow').classList.toggle('off', !on); $('txt').disabled = !on; $('send').disabled = !on; $('hint').textContent = hint || ''; if (on) $('txt').focus({ preventScroll: true }); }
+function clearCards() { T.querySelectorAll('.chips.live,.card.live').forEach(x => x.remove()); }
+function progress() {
+  const i = S.STAGES.indexOf(st.stage);
+  $('stages').innerHTML = S.STAGES.map((s, k) => `<span class="${k === i ? 'on' : k < i ? 'done' : ''}">${esc(s === 'life' ? 'You' : STAGE_TITLE[s].replace('Your focus', 'Focus'))}</span>`).join('');
+  $('prog').hidden = false; $('pz').hidden = false;
+}
+
+// ---- the AI guide (server-side). Off or failing: the canonical wording is used and nothing is picked up from text.
+async function talk(body, ms) {
+  if (!aiOn) return null;
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), ms || 20000);
+  try {
+    const res = await fetch(API.talk, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
+      body: JSON.stringify(Object.assign({ answers: st.A, history: st.history.slice(-10), stage: st.stage, skipped: st.skipped, name: st.contact.name }, body)) });
+    if (res.status === 503) { aiOn = false; return null; }
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) { return null; } finally { clearTimeout(timer); }
+}
+
+// ---- storing an answer, with where it came from. Only canonical options for applicable questions are accepted.
+function store(s, value, source, evidence, certainty) {
+  if (!S.valid(s, value)) return false;
+  S.set(st.A, s, value);
+  st.facts[s.key] = { value, source, evidence: evidence || '', certainty: certainty || 'explicit', confirmed: true, turn: st.history.length, at: new Date().toISOString() };
+  st.skipped = st.skipped.filter(k => k !== s.key);
+  S.prune(st.A);   // an answer that no longer applies (for example after a corrected age) is removed, never kept silently
+  for (const k of Object.keys(st.facts)) { const x = S.bySlotKey(k); if (x && !S.has(st.A, x)) delete st.facts[k]; }
+  save(); return true;
+}
+
+// ---- the main loop: one main question at a time, in the priority order of the specification
+async function next() {
+  if (busy) return; busy = true;
+  try {
+    clearCards(); progress();
+    // 1. a safety question brought forward by something they said
+    while (st.urgent.length) {
+      const s = S.bySlotKey(st.urgent[0]);
+      if (s && S.applicable(st.A).some(x => x.key === s.key) && !S.has(st.A, s)) return askSlot(s);
+      st.urgent.shift(); save();
+    }
+    // 2. the focus: their chosen areas, then what they'd like to be different and why
+    if (st.stage === 'focus') {
+      if (!S.has(st.A, S.bySlotKey('q1'))) return askSlot(S.bySlotKey('q1'));
+      if (!st.openDone.focus) return askOpen('focus', st.A.q1.includes('I’m not sure yet') ? "That's fine. What would you most like to feel different in your everyday life, and why does that matter to you now?" : 'What would you most like to be different in those areas, and why does that matter to you at this point in your life?');
+      return nextStage();
+    }
+    const stage = st.stage;
+    if (S.TRANSITIONS[stage] && !st.openDone[stage]) { st.openDone[stage] = true; save(); await typing(); guide(S.TRANSITIONS[stage], 'say'); }
+    if (S.OPENERS[stage] && !st.openDone[stage]) return askOpen(stage, S.OPENERS[stage]);
+    // 3. what is still missing in this area: grids together, everything else one at a time
+    const pend = S.pending(st.A, st.skipped, stage).filter(s => !(s.qid === 'q1'));
+    if (!pend.length) return nextStage();
+    const s = pend[0];
+    if (s.row) return askGrid(s.qid, pend.filter(x => x.qid === s.qid));
+    return askSlot(s);
+  } finally { busy = false; }
+}
+async function nextStage() {
+  const i = S.STAGES.indexOf(st.stage);
+  if (i >= S.STAGES.length - 1) return review();
+  st.stage = S.STAGES[i + 1]; save(); progress();
+  busy = false; return next();
+}
+
+// an open question: the member answers in their own words; Claude picks up answers and notes
+async function askOpen(stage, text) {
+  await typing(); guide(text, 'q');
+  composer(true, 'Answer in your own words. You can also skip this.');
+  const sk = chips([{ t: 'Skip', alt: true }], () => { st.openDone[stage] = true; save(); me('Skip'); next(); });
+  waiting = async said => { sk.remove(); st.openDone[stage] = true; save(); await understood(said, 'open:' + stage); };
+}
+// a structured question: canonical options as buttons; conversational ones are phrased naturally by Claude
+async function askSlot(s) {
+  let say = s.text;
+  if (!s.verbatim && !s.special && s.qid !== 'q1') { const r = await talk({ mode: 'ask', key: s.key }, 8000); if (r && r.say) say = r.say; }
+  await typing(350);
+  const d = guide(say, 'q');
+  if (s.hint) d.querySelector('.bub').insertAdjacentHTML('beforeend', `<span class="qh">${esc(s.hint)}</span>`);
+  if (s.type === 'habit') return askHabit(s);
+  if (s.type === 'text') { composer(true, 'Optional. Type anything you think we should know, or skip.'); chips([{ t: 'Skip', alt: true }], () => { me('Skip'); skip(s); }); waiting = async said => { clearCards(); store(s, said.slice(0, 600), 'typed'); next(); }; return; }
+  optionChips(s, (v, src) => { if (store(s, v, src)) { me(Array.isArray(v) ? v.map(label).join(', ') : label(v)); afterAnswer(s, v); } });
+  composer(true, s.verbatim ? 'Tap the answer that fits best.' : 'Tap an answer, or type it in your own words.');
+  waiting = async said => {
+    if (s.verbatim || s.qid === 'q1') {   // word-for-word questions: the typed answer must match an option exactly, or they tap
+      const m = s.options.find(o => o.toLowerCase() === said.toLowerCase() || label(o).toLowerCase() === said.toLowerCase());
+      if (m && S.valid(s, s.type === 'multi' ? [m] : m)) { store(s, s.type === 'multi' ? [m] : m, 'typed', said); return afterAnswer(s, S.get(st.A, s)); }
+      await typing(300); bubble(esc("Thanks. For this one, please tap the answer that fits best, so it's recorded exactly."), 'say');
+      return;
+    }
+    await understood(said, s.key);
+  };
+}
+function chips(items, onPick, cls) {
+  const box = document.createElement('div'); box.className = 'chips live' + (cls ? ' ' + cls : '');
+  box.innerHTML = items.map((x, i) => `<button type="button" class="chip${x.alt ? ' alt' : ''}${x.go ? ' go' : ''}" data-i="${i}">${esc(x.t)}</button>`).join('');
+  box.onclick = e => { const b = e.target.closest('[data-i]'); if (!b) return; box.remove(); onPick(items[+b.dataset.i]); };
+  T.append(box); scrollEnd(); return box;
+}
+function optionChips(s, done) {
+  const box = document.createElement('div'); box.className = 'choices chips live'; box.dataset.key = s.key;
+  const sel = new Set(), multi = s.type === 'multi';
+  const canSkip = !s.requiredSafety;
+  const render = () => {
+    box.innerHTML = `<div class="chips">${s.options.map((o, i) => `<button type="button" class="chip" aria-pressed="${sel.has(o)}" data-i="${i}">${esc(label(o))}</button>`).join('')}${canSkip ? '<button type="button" class="chip alt" data-skip="1">Skip</button>' : ''}</div>${multi ? `<button type="button" class="done" ${sel.size ? '' : 'disabled'}>Done</button>` : ''}`;
+  };
+  render();
+  box.onclick = e => {
+    if (e.target.closest('[data-skip]')) { box.remove(); me('Skip'); return skip(s); }
+    if (e.target.closest('.done')) { if (!sel.size) return; box.remove(); return done([...sel], 'tapped'); }   // the order they chose in matters to the rules (first area, first goal)
+    const b = e.target.closest('[data-i]'); if (!b) return;
+    const o = s.options[+b.dataset.i];
+    if (!multi) { box.remove(); return done(o, 'tapped'); }
+    const solo = /^(None of these|Nothing in particular|I’m not sure yet|Prefer not to say)$/;
+    if (sel.has(o)) sel.delete(o); else { if (solo.test(o)) sel.clear(); else [...sel].filter(x => solo.test(x)).forEach(x => sel.delete(x)); if (!s.max || sel.size < s.max) sel.add(o); }
+    render();
+  };
+  T.append(box); scrollEnd();
+}
+function skip(s) { if (!st.skipped.includes(s.key)) st.skipped.push(s.key); save(); next(); }
+async function afterAnswer(s, v) {
+  clearCards();
+  // "Something else" or "Other": a few optional words for the Pilot (they never change the plan)
+  const picked = [].concat(v || []).find(x => x === 'Something else' || x === 'Other');
+  if (picked && !s.row) {
+    await typing(250); bubble(esc('Tell us a little more, if you’d like.'), 'say');
+    composer(true, 'Optional, up to 300 characters.');
+    chips([{ t: 'Skip', alt: true }], () => { me('Skip'); next(); });
+    waiting = async said => { clearCards(); st.A.more = Object.assign({}, st.A.more, { [s.qid]: said.slice(0, 300) }); save(); next(); };
+    return;
+  }
+  next();
+}
+// a grid: the rows still missing, together on one card, each with its own buttons
+async function askGrid(qid, rows) {
+  const q = QUESTIONS.find(x => x.id === qid), verb = S.VERBATIM.has(qid);
+  await typing(350);
+  guide(rows.length > 1 ? q.text : `${q.text} ${rows[0].text}`, 'q');
+  if (q.hint) T.lastElementChild.querySelector('.bub').insertAdjacentHTML('beforeend', `<span class="qh">${esc(q.hint)}</span>`);
+  const card = document.createElement('div'); card.className = 'card live tbl';
+  const got = {};
+  card.innerHTML = rows.map((s, i) => `<div class="r" data-r="${i}" data-key="${esc(s.key)}">${rows.length > 1 ? `<span class="lb">${esc(s.text)}</span>` : ''}<div class="chips">${s.options.map((o, j) => `<button type="button" class="chip" aria-pressed="false" data-j="${j}">${esc(o)}</button>`).join('')}</div></div>`).join('')
+    + `<div class="act"><button type="button" class="done" disabled>Done</button><button type="button" class="chip alt" data-skip="1">${verb ? 'Prefer not to answer' : 'Skip'}</button></div>`;
+  const doneBtn = card.querySelector('.done');
+  card.onclick = e => {
+    if (e.target.closest('[data-skip]')) { card.remove(); me('Skip'); rows.forEach(s => st.skipped.includes(s.key) || st.skipped.push(s.key)); save(); return next(); }
+    if (e.target.closest('.done')) {
+      card.remove();
+      rows.forEach(s => { if (got[s.key]) store(s, got[s.key], 'tapped'); else if (!st.skipped.includes(s.key)) st.skipped.push(s.key); });
+      me(rows.filter(s => got[s.key]).map(s => rows.length > 1 ? `${s.text}: ${got[s.key]}` : got[s.key]).join(' · ') || 'Skip');
+      return next();
+    }
+    const b = e.target.closest('[data-j]'); if (!b) return;
+    const ri = +b.closest('[data-r]').dataset.r, s = rows[ri];
+    got[s.key] = s.options[+b.dataset.j];
+    b.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(c === b)));
+    doneBtn.disabled = verb ? rows.some(x => !got[x.key]) : !Object.keys(got).length;
+  };
+  T.append(card); scrollEnd();
+  composer(!verb, verb ? 'Tap one answer on each line.' : 'Tap one answer on each line, or type in your own words.');
+  waiting = verb ? null : async said => { card.remove(); await understood(said, rows[0].key); };
+}
+// the personal habit: their words, then private or shared (a private one never reaches the Pilot)
+function askHabit(s) {
+  composer(true, 'Optional. Type it in your own words, or skip.');
+  chips([{ t: 'Skip', alt: true }], () => { me('Skip'); skip(s); });
+  waiting = async said => {
+    clearCards();
+    await typing(300); bubble(esc('Thanks. Would you like to keep this private in your Journal, or share it with your Pilot?'), 'q');
+    composer(false, '');
+    chips([{ t: 'Keep this private in my Journal' }, { t: 'Share this with my Pilot so they can support me' }], c => {
+      me(c.t); store(s, { text: said.slice(0, 300), choice: c.t }, 'typed'); next();
+    });
+  };
+}
+
+// ---- understanding what they said: Claude proposes answers, the member confirms each one before it is stored
+async function understood(said, asked, updates) {
+  composer(false, ''); clearCards();
+  const r = await talk({ mode: 'turn', text: said, asked, updates: !!updates });
+  if (!r) {   // no AI: their words are kept for the Pilot, and the questions are asked one by one
+    if (asked.startsWith('open:')) st.notes.push({ area: AREA_OF[asked.slice(5)] || 'General', kind: 'context', text: said.slice(0, 220), turn: st.history.length, source: 'member' });
+    if (asked === 'open:focus') setOpening(said);
+    save();
+    const s = S.bySlotKey(asked);
+    if (s && !S.has(st.A, s)) { await typing(250); bubble(esc('Thanks. Please tap the answer that fits best.'), 'say'); return askSlot(s); }
+    await typing(300); bubble(esc('Thank you, that helps.'), 'say'); return next();
+  }
+  for (const n of r.notes || []) st.notes.push(Object.assign({ turn: st.history.length, source: 'ai_summary_of_member' }, n));
+  if (asked === 'open:focus') setOpening(said);
+  // a safety mention brings the approved question forward; it never fills the answer
+  if (r.safety && r.safety !== 'none') for (const k of S.SAFETY_TOPICS[r.safety] || []) { const s = S.bySlotKey(k); if (s && S.applicable(st.A).some(x => x.key === k) && !S.has(st.A, s) && !st.urgent.includes(k)) st.urgent.push(k); }
+  save();
+  await typing(350); guide(r.reply, r.clarify ? 'q' : 'say');
+  if (st.urgent.length) { await typing(300); guide("Thank you for telling me. I'd like to ask a specific question about that, so your Good Span is suitable for you.", 'say'); }
+  // defence in depth: only conversational questions that apply now, with their own options (the server checks this too)
+  const appl = new Set(S.applicable(st.A).map(x => x.key));
+  const props = (r.proposals || []).filter(p => { const s = S.bySlotKey(p.key); return s && !s.verbatim && !s.special && s.qid !== 'q1' && appl.has(s.key) && S.valid(s, p.value) && (updates || !S.has(st.A, s)); });
+  if (!props.length) {
+    const s = S.bySlotKey(asked);
+    if (s && !S.has(st.A, s)) {   // the question they were answering is still open: ask it again with its buttons
+      if (r.clarify) { optionChips(s, (v, src) => { if (store(s, v, src)) { me([].concat(v).map(label).join(', ')); afterAnswer(s, v); } }); composer(true, 'Tap an answer, or say a bit more.'); waiting = async t => understood(t, asked); return; }
+      return askSlot(s);
+    }
+    return next();
+  }
+  confirmCard(props, said, asked);
+}
+function setOpening(text) {
+  const ks = buildResult.themesOf(text), TH = buildResult.THEMES;
+  st.A.q0 = { text: text.slice(0, 500), themes: ks, areas: [...new Set(ks.flatMap(k => TH[k].areas))] }; save();
+}
+function confirmCard(props, said, asked) {
+  const card = document.createElement('div'); card.className = 'card live';
+  const val = {}; props.forEach(p => { val[p.key] = p.value; });
+  const draw = () => {
+    card.innerHTML = `<h3>Here's what I noted. Is it right?</h3>` + props.map((p, i) => {
+      const s = S.bySlotKey(p.key), v = val[p.key];
+      return `<div class="it" data-k="${esc(p.key)}"><span class="q">${esc(s.row ? s.lead + ' ' + s.text : s.text)}</span>
+        <div class="chips">${s.options.map((o, j) => `<button type="button" class="chip" aria-pressed="${[].concat(v || []).includes(o)}" data-j="${j}">${esc(label(o))}</button>`).join('')}</div>
+        ${p.evidence ? `<span class="ev">You said: “${esc(p.evidence)}”${p.certainty === 'approximate' ? ' (roughly)' : ''}</span>` : ''}</div>`;
+    }).join('') + `<div class="act"><button type="button" class="done">That's right</button><button type="button" class="chip alt" data-none="1">Leave these out</button></div>`;
+  };
+  draw();
+  card.onclick = e => {
+    if (e.target.closest('[data-none]')) { card.remove(); me('Leave these out'); return next(); }
+    if (e.target.closest('.done')) {
+      card.remove();
+      const kept = props.filter(p => val[p.key] != null && (!Array.isArray(val[p.key]) || val[p.key].length));
+      for (const p of kept) { const s = S.bySlotKey(p.key); store(s, val[p.key], 'extracted', p.evidence, p.certainty); }
+      me(kept.length ? "That's right" : 'Leave these out');
+      return next();
+    }
+    const b = e.target.closest('[data-j]'); if (!b) return;
+    const k = b.closest('[data-k]').dataset.k, s = S.bySlotKey(k), o = s.options[+b.dataset.j];
+    if (s.type === 'multi') { const cur = new Set([].concat(val[k] || [])); cur.has(o) ? cur.delete(o) : cur.add(o); val[k] = [...cur]; if (s.max && val[k].length > s.max) val[k] = val[k].slice(-s.max); if (!S.valid(s, val[k]) && val[k].length) val[k] = [o]; }
+    else val[k] = val[k] === o ? null : o;
+    draw();
+  };
+  T.append(card); scrollEnd();
+  composer(true, 'Tap to fix anything, or type a correction.');
+  waiting = async t => { card.remove(); await understood(t, asked, true); };
+}
+
+// ---- reflect back, let them correct anything, then confirm
+async function review() {
+  setState('awaiting_member_confirmation');
+  composer(false, ''); clearCards(); await typing(500);
+  const box = document.createElement('section'); box.className = 'rev';
+  box.innerHTML = `<p class="ui">Before we prepare your Good Span</p><h2>Here's what I understood.</h2><div class="refl"><p class="thinking">One moment…</p></div>`;
+  T.append(box); scrollEnd();
+  const r = await talk({ mode: 'reflect', notes: st.notes }, 20000);
+  const refl = r && r.paragraphs ? r.paragraphs : [ruleReflection()];
+  box.querySelector('.refl').innerHTML = refl.map(p => `<p>${esc(p)}</p>`).join('');
+  drawAnswers(box);
+  const act = document.createElement('div'); act.className = 'wbtns';
+  act.innerHTML = `<button type="button" class="btn" id="ok">This is right. Prepare my Good Span</button>`;
+  box.append(act);
+  act.querySelector('#ok').onclick = () => confirmProfile();
+  await typing(300); guide('What would you correct, remove or add?', 'q');
+  composer(true, 'Type a correction, tap Change next to an answer, or confirm.');
+  waiting = async t => { box.remove(); await understood(t, 'review', true); };
+}
+function ruleReflection() {
+  const areas = (st.A.q1 || []).map(label).filter(x => x !== 'I’m not sure yet');
+  const own = st.A.q0 && st.A.q0.text ? ` In your words: “${st.A.q0.text}”.` : '';
+  return `${areas.length ? `You'd most like to work on ${areas.join(' and ')}.` : "You weren't sure yet where to start."}${own} Your answers are listed below. Tap Change next to anything that isn't right.`;
+}
+function drawAnswers(box) {
+  const d = document.createElement('details');
+  const items = S.applicable(st.A).filter(s => S.has(st.A, s));
+  d.innerHTML = `<summary>Your answers (${items.length})</summary><dl>${items.map(s => { const v = S.get(st.A, s); const t = s.type === 'habit' ? `${v.text} (${/Share/.test(v.choice) ? 'shared with your Pilot' : 'private'})` : [].concat(v).map(label).join(', ');
+    return `<dt>${esc(s.row ? s.lead + ' ' + s.text : s.text)}</dt><dd>${esc(t)}</dd><button type="button" class="ch" data-k="${esc(s.key)}">Change</button>`; }).join('')}</dl>`;
+  d.onclick = async e => { const b = e.target.closest('[data-k]'); if (!b) return; const s = S.bySlotKey(b.dataset.k); box.remove(); S.set(st.A, s, undefined); delete st.facts[s.key]; save(); st.stage = 'life';
+    await askSlotThenReview(s); };
+  box.append(d);
+}
+async function askSlotThenReview(s) {
+  // after one change, the conversation continues (any newly applicable question is asked), then review again
+  st.stage = s.stage; save(); next();
+}
+
+// ---- validate, then the report: the rules work out what is safe and allowed; Claude writes the report; checked twice
+async function confirmProfile() {
+  composer(false, ''); clearCards();
+  S.prune(st.A);
+  const gaps = S.safetyGaps(st.A);
+  if (gaps.length) {   // a safety question is unanswered: nothing is assumed clear
+    st.urgent = gaps; save(); await typing(300); guide('Before we prepare your Good Span, there is one question I still need you to answer.', 'say'); return next();
+  }
+  st.confirmedAt = new Date().toISOString(); setState('validated');
+  await typing(300); bubble('<span class="thinking">Preparing your Good Span…</span>', 'say');
+  setState('plan_pending');
+  const env = { E: makeEngine(GS_DATA), DATA: GS_DATA, toFeatures, profile: gsProfile };
+  const A = planAnswers();
+  const r = buildResult(st.contact.name, A, env);
+  r.interest = { url: SHEET_URL, ref: st.id, email: st.contact.email, name: st.contact.name };
+  const rep = aiOn ? await writeReport(A, r) : null;
+  setState(r.safety ? 'pilot_follow_up_required' : 'plan_ready');
+  // the rules' own Good Span: the fallback, and what the report is compared with
+  if (!rep && API.story) {
+    const out = await post(API.story, { facts: Object.assign({}, r.storyFacts, { answers: storyAnswers() }) }, 15000);
+    if (out && out.heading && Array.isArray(out.paragraphs)) r.story = { heading: out.heading, paras: out.paragraphs, source: 'ai' };
+  }
+  const html = renderPlan(r);
+  st.plan = { reportBy: rep ? 'ai' : 'rules', practices: r.practices.map(x => ({ fam: x.fam, rec: x.rec })), at: new Date().toISOString() };
+  st.report = rep ? rep.report : null; save();
+  sendCompletion(r, html, rep);
+  T.lastElementChild.remove();
+  if (rep) showReport(rep.report, rep.ctx, html); else showPlan(html);
+}
+// the context every report is checked against: what applies to this person, and the words they used
+function reportCtx(A, r) {
+  const p = toFeatures(A);
+  const lines = S.applicable(A).filter(s => S.has(A, s) && s.qid !== 'q54').map(s => { const v = S.get(A, s); const t = Array.isArray(v) ? v.join('; ') : typeof v === 'object' ? '' : v; return t ? `- ${s.row ? `${s.lead} — ${s.text}` : s.text}: ${t}` : ''; }).filter(Boolean);
+  const notes = st.notes.map(n => `- ${n.area} · ${n.kind}: ${n.text}`);
+  const habit = st.A.q54;
+  return { wish: p.wish || [], held: !!r.held, optout: p.optout || [], pool: r.pool, cards: GSEvidence.forProfile(p),
+    factsText: [...lines, ...notes, (st.A.q0 && st.A.q0.text) || ''].join('\n'), privateText: habit && !/Share/.test(habit.choice || '') ? habit.text : '',
+    name: st.contact.name, date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), safety: r.safety };
+}
+// Claude writes; the page checks; a second pass checks it against what they said; one retry with the reasons
+async function writeReport(A, r) {
+  const ctx = reportCtx(A, r);
+  const toSend = JSON.parse(JSON.stringify(A)); delete toSend.q54; delete toSend.more;
+  const base = { answers: toSend, notes: st.notes, opening: (st.A.q0 && st.A.q0.text) || '', pool: r.pool, held: r.held, timeTxt: r.timeTxt, change: r.change,
+    rulesPlan: r.practices.map(x => `${x.fam} (${x.rec ? 'recommended' : 'optional'})`).join(', ') };
+  let feedback = null;
+  for (let tries = 0; tries < 2; tries++) {
+    const out = await post(API.report, Object.assign({ mode: 'write', feedback }, base), 60000);
+    if (!out || !out.report) return null;
+    let problems = GSReport.check(out.report, ctx);
+    if (!problems.length) {
+      const v = await post(API.report, Object.assign({ mode: 'verify', report: out.report }, base), 40000);
+      if (!v) return null;   // the check could not run: never show an unchecked report
+      problems = (v.problems || []).map(x => `"${x.quote}": ${x.problem}`);
+    }
+    if (!problems.length) return { report: out.report, ctx, tries: tries + 1 };
+    feedback = problems; console.warn('Report rejected', problems);
+    st.log.push({ at: new Date().toISOString(), reportRejected: problems.slice(0, 8) }); save();
+  }
+  return null;
+}
+function showReport(rep, ctx, planHtml) {
+  if (!$('repcss')) { const c = document.createElement('style'); c.id = 'repcss'; c.textContent = GSReport.CSS; document.head.append(c); }
+  const m = document.createElement('main'); m.id = 'report'; m.className = 'report';
+  m.innerHTML = GSReport.render(rep, ctx) + `<p class="rcmp"><button type="button" class="btn ghost" id="std">See the standard Good Span</button></p>`;
+  document.body.append(m); document.documentElement.classList.add('reporton'); window.scrollTo(0, 0);
+  // for comparing the two evaluations: the rules' plan from the same answers
+  m.querySelector('#std').onclick = () => { showPlan(planHtml); const back = document.createElement('button'); back.type = 'button'; back.className = 'btn rback'; back.textContent = 'Back to my report'; back.onclick = () => { $('plan').remove(); back.remove(); document.documentElement.classList.remove('planon'); }; document.body.append(back); };
+}
+// answers for the rules: the confirmed structured answers only (notes and conversation text never reach the engine)
+function planAnswers() { const A = JSON.parse(JSON.stringify(st.A)); return A; }
+function storyAnswers() {
+  return S.applicable(st.A).filter(s => S.has(st.A, s) && s.type !== 'text' && !(s.type === 'habit' && !/Share/.test((S.get(st.A, s) || {}).choice || '')))
+    .map(s => ({ section: STAGE_TITLE[s.stage] || '', question: s.row ? `${s.lead} ${s.text}` : s.text, answer: s.type === 'habit' ? S.get(st.A, s).text : [].concat(S.get(st.A, s)).join(', ') }));
+}
+async function post(url, body, ms) {
+  if (!url) return null;
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), ms || 20000);
+  try { const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ctl.signal }); if (res.status === 503) aiOn = false; return res.ok ? await res.json() : null; }
+  catch (e) { return null; } finally { clearTimeout(timer); }
+}
+function renderPlan(r) {
+  const img = { Nutrition: IMG.nutrition, Sleep: IMG.sleep, Movement: IMG.movement, Mind: IMG.mind, Connection: IMG.connection, Prevention: IMG.prevention, Stretch: IMG.sleep };
+  return RESULT_TPL.replace('_' + '_IMG__', () => JSON.stringify(img)).replace('_' + '_DATA__', () => JSON.stringify([r]).replace(/</g, '\\u003c'));
+}
+function showPlan(html) {
+  st.planHtml = null; save();
+  const f = document.createElement('iframe'); f.id = 'plan'; f.title = 'Your Good Span';
+  f.srcdoc = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>' + html + '</body></html>';
+  document.body.append(f); document.documentElement.classList.add('planon'); window.scrollTo(0, 0);
+}
+// the completion for the Pilot (Google Sheet). A habit kept private never leaves the member's device.
+function sendCompletion(r, html, rep) {
+  if (!SHEET_URL) return;
+  const habit = st.A.q54, shared = habit && /Share/.test(habit.choice || '');
+  const answers = S.applicable(st.A).filter(s => S.has(st.A, s) && !(s.qid === 'q54' && !shared)).map(s => {
+    const v = S.get(st.A, s), f = st.facts[s.key] || {};
+    return { section: STAGE_TITLE[s.stage] || '', question: s.row ? `${s.lead} ${s.text}` : s.text, answer: s.type === 'habit' ? v.text : [].concat(v).join(', ') + ((st.A.more || {})[s.qid] && !s.row ? ': ' + st.A.more[s.qid] : ''),
+      how: f.source === 'extracted' ? `From conversation (confirmed): “${f.evidence || ''}”` : f.source === 'typed' ? 'Typed' : 'Tapped' };
+  });
+  for (const n of st.notes) answers.push({ section: 'In their words', question: `${n.area} · ${n.kind.replace('_', ' ')}`, answer: n.text, how: 'Conversation' });
+  const body = { key: SHEET_KEY, planId: st.id, submittedAt: new Date().toISOString(), source: 'conversation-v2', version: JSON.stringify(st.versions),
+    name: st.contact.name, email: st.contact.email, opening: (st.A.q0 && st.A.q0.text) || '', answers,
+    story: [r.story && r.story.heading, ...(r.story && r.story.paras || [])].filter(Boolean).join('\n\n'), storySource: (r.story && r.story.source) || '',
+    plan: { focus: r.focus, recommended: r.practices.filter(x => x.rec).map(x => x.fam), extras: r.practices.filter(x => !x.rec).map(x => x.fam), own: shared ? habit.text + ' (shared with Pilot)' : '', reportBy: rep ? 'ai' : 'rules' },
+    report: rep ? JSON.stringify(rep.report) : '',
+    // the page the plan link opens: what the member saw
+    planHtml: rep ? GSReport.page(rep.report, rep.ctx) : '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your Good Span</title></head><body>' + html + '</body></html>' };
+  fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).catch(e => console.warn('Completion not sent', e));
+}
+
+// ---- input: the member's words are shown once, then handled by whatever question is waiting
+async function send() {
+  const t = $('txt').value.replace(/\s+/g, ' ').trim(); if (!t || !waiting) return;
+  $('txt').value = ''; const w = waiting; waiting = null;
+  me(t); composer(false, '');
+  await w(t);
+}
+$('send').onclick = send;
+$('txt').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); send(); } });
+$('pause').onclick = () => { if (!st) return; setState('paused'); composer(false, ''); clearCards(); notice("Paused. Your answers are saved on this device. Come back to this page any time to carry on."); chips([{ t: 'Carry on', go: true }], () => { setState('active'); rebuild(); }); };
+
+// ---- welcome, consent, resume
+function start(resume) {
+  $('welcome').hidden = true; $('chat').hidden = false; progress();
+  if (resume) return rebuild();
+  bubble(esc(`Hello ${st.contact.name}. Let's start with what matters most to you.`), 'say');
+  next();
+}
+function rebuild() {
+  T.innerHTML = '';
+  for (const h of st.history.slice(-12)) h.role === 'member' ? (() => { const d = document.createElement('div'); d.className = 'msg me'; d.innerHTML = `<div class="bub">${esc(h.text)}</div>`; T.append(d); })() : bubble(esc(h.text), 'say');
+  if (st.state === 'awaiting_member_confirmation') return review();
+  if (['plan_ready', 'pilot_follow_up_required'].includes(st.state)) { bubble(esc('Your Good Span was prepared. Start again to make a new one.'), 'say'); return; }
+  if (st.state === 'paused') setState('active');
+  next();
+}
+if (PRIVACY_URL) $('pn').href = PRIVACY_URL; else $('pn').replaceWith(Object.assign(document.createElement('span'), { textContent: '(Privacy notice to follow.)' }));
+const saved = load();
+if (saved && saved.v === 1 && saved.state !== 'plan_ready') {
+  $('resume').hidden = false;
+  $('cont').onclick = () => { st = saved; start(true); };
+  $('fresh').onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} $('resume').hidden = true; };
+}
+$('wf').onsubmit = e => {
+  e.preventDefault();
+  const name = $('nm').value.trim(), email = $('em').value.trim();
+  if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || !$('c1').checked || !$('c2').checked) return;
+  st = fresh({ name, email }); save(); start(false);
+};
+</script>

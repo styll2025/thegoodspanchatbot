@@ -1,0 +1,866 @@
+<title>Good Span Conversation</title>
+<style>
+/* Layout: the assessment's own welcome screen, then one calm conversation column. The page sits on light blue with black type (the contrast matrix rates that pair AAA). The wordmark is plum. Each section opens with the same white card; questions are set large in the display face, the member's answers as plum pills, options as soft chips. Brand: The Good Span identity. */
+@font-face{font-family:"BST Bazaine";src:url(__F_THIN__) format("opentype");font-weight:200;font-display:swap}
+@font-face{font-family:"BST Bazaine";src:url(__F_LIGHT__) format("opentype");font-weight:300;font-display:swap}
+@font-face{font-family:"BST Bazaine";src:url(__F_REG__) format("opentype");font-weight:400;font-display:swap}
+@font-face{font-family:"Archivo";src:url(__F_UI__) format("truetype");font-weight:400;font-display:swap}
+:root{
+  --plum:#4D2831;--cream:#FFF2EA;--blue:#D1E6E9;--white:#FFFFFF;--pink:#F5A4C2;--orange:#FE600C;--ochre:#CB863A;--black:#000;
+  --muted:#222;--line:rgba(77,40,49,.2);
+  --display:"BST Bazaine","Helvetica Neue",Arial,sans-serif;--ui:"Archivo","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--blue);color:var(--black)}
+body{font-family:var(--display);font-weight:300;font-size:15.3px;line-height:1.5;margin:0}
+.top{border-bottom:1px solid var(--plum);padding-inline:16px}
+.top .in{max-width:1040px;margin:0 auto;padding-block:18px 16px;display:flex;align-items:center;justify-content:center;position:relative}
+.top img{height:calc(20px * 1.15);width:auto;display:block}
+.prog{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:12px}
+.bar{width:140px;height:3px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--plum);transition:width .4s}
+.ui{font-family:var(--ui);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin:0}
+.page{padding-inline:16px}
+/* welcome, as in the assessment */
+.welcome{max-width:760px;margin:0 auto;padding-block:clamp(36px,6vw,64px) 0;display:grid;gap:18px}
+.welcome .kick{font-family:var(--ui);font-size:15px;letter-spacing:.06em;text-transform:uppercase;margin:0}
+.welcome h1{margin:0;font-weight:200;font-size:clamp(35.28px,5.67vw,60.48px);line-height:1;letter-spacing:-.02em}
+.welcome .lead{margin:0;font-size:clamp(16.2px,1.8vw,18.9px);max-width:62ch}
+.wform{display:grid;gap:22px;max-width:420px;margin-top:6px}
+.wform label{display:grid;gap:10px;font-size:clamp(16.2px,1.8vw,18.9px)}
+.wform input{font:inherit;font-size:16.2px;color:var(--black);background:transparent;border:1px solid var(--plum);border-radius:16px;padding:14px 16px;width:100%}
+.wform input::placeholder{color:var(--muted)}
+.wform input:focus{outline:2px solid var(--plum);outline-offset:1px}
+.wnav{display:flex;justify-content:flex-end;max-width:860px}
+.btn{font-family:var(--ui);font-size:13px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:14px 26px;border:1px solid var(--plum);background:var(--plum);color:var(--cream);cursor:pointer}
+.btn:focus-visible{outline:2px solid var(--plum);outline-offset:3px}
+/* conversation */
+.wrap{max-width:760px;margin:0 auto;padding-block:24px 24px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.thread{display:flex;flex-direction:column;gap:14px;min-width:0}
+.sec{position:relative;isolation:isolate;overflow:hidden;border-radius:24px;padding:clamp(22px,4vw,34px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 24px;align-items:center;margin-top:10px;background:var(--white);color:var(--black)}
+.sec>*{position:relative;z-index:1}
+.sec h2{margin:0;font-weight:200;font-size:clamp(30px,4.6vw,42px);line-height:1.05}
+.sec p{margin:0;max-width:52ch}
+.sec .stx{display:grid;gap:10px;min-width:0}
+.photo{width:clamp(96px,15vw,128px);aspect-ratio:1;max-width:100%;border-radius:50%;overflow:hidden;border:1.5px solid currentColor}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.msg{display:flex;gap:12px;align-items:flex-start;max-width:min(600px,92%);min-width:0}
+.msg .av{flex:none;width:28px;height:28px;display:grid;place-items:center;margin-top:4px}
+.msg .av img{width:22px;height:auto;opacity:.9}
+.msg.say .av,.msg.lead .av{visibility:hidden}
+.msg.q{margin-top:4px}
+.bub{min-width:0;overflow-wrap:anywhere}
+.msg.q .bub{font-size:clamp(18px,2.34vw,20.7px);line-height:1.35}
+.msg.q .bub .row{display:block;margin-top:6px;font-size:16.2px}
+.msg.say .bub,.msg.lead .bub{font-size:15.3px;color:var(--muted)}
+.msg.say .bub b{font-weight:400;color:var(--black)}
+.bub small{display:block;margin-top:6px;font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bub .qh{display:block;margin-top:6px;font-size:13.5px;color:var(--muted);line-height:1.45}
+.me{align-self:flex-end}
+.me .bub{background:var(--plum);color:var(--cream);border-radius:22px 22px 6px 22px;padding:10px 18px;font-size:15.3px}
+.typing .bub{display:flex;gap:5px;padding:12px 0}
+.typing .bub i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:b 1s infinite}
+.typing .bub i:nth-child(2){animation-delay:.15s}.typing .bub i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.choices{display:grid;justify-items:start;gap:16px;padding-left:40px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding-left:40px}
+.choices .chips{padding-left:0}
+.chip{font-family:var(--display);font-size:14.4px;font-weight:300;color:var(--black);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s}
+.chip:hover{border-color:var(--plum)}
+.chip[aria-pressed="true"],.chip[aria-pressed="true"]:hover{background:var(--pink);border-color:var(--pink);color:var(--plum)}
+.chip.go,.chip.alt{font-family:var(--ui);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:10px 18px}
+.chip.go{background:var(--plum);border-color:var(--plum);color:var(--cream)}
+.chip.alt{background:transparent;border-color:var(--plum)}
+.chip.go:disabled{opacity:.3;cursor:default}
+.done{font-family:var(--ui);font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:12px 28px;border-radius:999px;border:1px solid var(--plum);background:var(--plum);color:var(--cream);cursor:pointer}
+.done:disabled{opacity:.35;cursor:default}
+.chip:focus-visible,.done:focus-visible,.send:focus-visible,.mic:focus-visible,#txt:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
+.comp{position:sticky;bottom:env(safe-area-inset-bottom,0px);background:linear-gradient(to bottom,rgba(209,230,233,0),var(--blue) 30%);padding-block:18px 8px;display:grid;gap:6px}
+.inrow{min-width:0;position:relative;display:flex;gap:8px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 20px}
+.inrow:focus-within{border-color:var(--plum)}
+#txt{flex:1;min-width:0;width:0;border:0;background:transparent;font-family:var(--display);font-size:15.3px;font-weight:300;color:var(--black);padding:9px 0}
+#txt:focus{outline:none}
+#txt::placeholder{color:var(--muted)}
+.mic,.send{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--black);display:grid;place-items:center;cursor:pointer}
+.send{background:var(--plum);border-color:var(--plum);color:var(--cream)}
+.mic svg,.send svg{width:18px;height:18px}
+.inrow.off{opacity:.4}
+.hint{font-size:12.6px;color:var(--muted);padding-left:20px;min-height:1.4em;margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sum{background:var(--white);border-radius:24px;overflow:hidden;display:grid;margin-top:8px}
+.sum .hd{background:var(--plum);color:var(--cream);padding:24px;display:grid;gap:6px}
+.sum .hd h2{margin:0;font-weight:300;font-size:clamp(26px,3.6vw,34px);line-height:1.15}
+.sum .bd{padding:20px 24px 24px;display:grid;gap:14px}
+.sum .bd>p{margin:0}
+.sum .planlink{overflow-wrap:anywhere}
+.sum .planlink a{color:var(--plum)}
+.sum details{border-top:1px dotted var(--line);padding-top:10px}
+.sum summary{cursor:pointer;font-family:var(--ui);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.sum dl{margin:8px 0 0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:0 18px}
+.sum dt,.sum dd{padding:7px 0;border-bottom:1px dotted var(--line);font-size:12.6px}
+.sum dt{color:var(--muted)}
+.sum dd{margin:0}
+.sum .how{font-family:var(--ui);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-left:8px;white-space:nowrap}
+.stat{display:flex;flex-wrap:wrap;gap:8px}
+.stat span{font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+@media (max-width:1100px){.top .in{flex-wrap:wrap}.prog{position:static;transform:none;flex:1 0 100%;justify-content:flex-end}}
+@media (max-width:560px){.sec{grid-template-columns:minmax(0,1fr)}.photo{grid-row:1;width:84px}.chips,.choices{padding-left:0}.sum dl{grid-template-columns:minmax(0,1fr)}.sum dt{border-bottom:0;padding-bottom:0}.sum dd{padding-top:2px}.bar{width:80px}.wnav{justify-content:flex-start}}
+@media (prefers-reduced-motion:reduce){.typing .bub i{animation:none;opacity:.6}.bar i,.chip{transition:none}}
+#plan{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--blue);z-index:10}
+html.planon,html.planon body{overflow:hidden}
+.mic.on{background:var(--pink);border-color:var(--plum);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(245,164,194,.35)}}
+@media (prefers-reduced-motion:reduce){.mic.on{animation:none}}
+.thinking{color:var(--muted);font-size:13.5px}
+</style>
+
+<header class="top"><div class="in">
+  <img src="__LOGO__" alt="The Good Span">
+  <div class="prog" id="prog" hidden><span class="bar" aria-hidden="true"><i id="bar"></i></span><span class="ui" id="cnt"></span></div>
+</div></header>
+
+<div class="page">
+  <section class="welcome" id="welcome" aria-labelledby="wh">
+    <p class="kick">Welcome</p>
+    <h1 id="wh">Let's find your Good Span.</h1>
+    <p class="lead">This evaluation helps us understand where you are today across six pillars of longevity: Nutrition, Sleep, Movement, Mind, Connection and Prevention. You can type your answers or simply talk to us. It should take around 15 minutes.</p>
+  </section>
+
+  <div class="wrap" id="chat">
+    <main class="thread" id="thread" aria-live="polite"></main>
+    <div class="comp" id="comp">
+      <div class="inrow" id="inrow">
+        <label for="txt" class="sr">Your answer</label>
+        <input id="txt" type="text" autocomplete="off" placeholder="Type your answer, or tap an option">
+        <button class="mic" id="mic" type="button" aria-label="Speak your answer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <button class="send" id="send" type="button" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
+      </div>
+      <p class="hint" id="hint"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- the assessment itself: the same questions, follow-ups and skips as the standard form ----
+__QUESTIONS__
+__RESULT_JS__
+// ---- conversation layer ----
+const SYM = "__SYM__", IMG = __IMG__;
+const PILLAR = { nutrition: ['#FE600C', '#000', 'Nutrition'], sleep: ['#FFFFFF', '#000', 'Sleep'], movement: ['#F5A4C2', '#000', 'Movement'], mind: ['#CB863A', '#000', 'Mind'], connection: ['#4D2831', '#FFF2EA', 'Connection'], prevention: ['#000000', '#FFF2EA', 'Prevention'] };
+const ALT = { nutrition: 'Hands stirring a steaming pot of rice.', sleep: 'A woman stretching forward on a green yoga mat in warm morning light.', movement: 'A small group doing yoga together on the grass in a Lisbon park.', mind: 'A textile artist smiling as she stitches red thread at her table.', connection: 'Two women of different generations walking arm in arm at golden hour, smiling at each other.', prevention: 'A hand brushing through herbs in a rooftop garden.' };
+// health checks, conditions and mood can be tapped or spoken. A spoken or typed answer is always read back before it is saved.
+const FIXED = new Set(['q4', 'q5', 'q5a', 'q5b', 'q6', 'q19a', 'q29', 'q32', 'q48a']);
+// grids whose rows read better as their own questions
+const ROWQ = { q40: { tobacco: 'Do you currently smoke cigarettes, cigars, rolling tobacco or other tobacco?', vape: 'And do you use vapes or e-cigarettes?' } };
+const LEAD = { q5: "A few questions to make sure your Good Span is safe for you.", q32: "These next four help us suggest practices that suit how you're feeling right now. They are not a diagnosis.", q55: "Nearly there. These last ones set the limits your Good Span will respect." };
+const EXCL = q => NONE_WORDS;
+let stage = 'contact', ci = 0, contact = {}, ready = false, A = {}, how = {}, qi = 0, row = 0, secShown = -1, sel = new Set(), name = '', moreQ = null;
+// talk or type: the microphone starts talking, and typing or tapping returns to the box
+let mode = 'type', rec = null, listening = false, viaVoice = false, alts = [], misses = 0;
+let voiceClip = null, session = 0, recorderTask = Promise.resolve(null), capTimer = null, silenceTimer = null, clipOnly = false, pending = null;
+// settings: the language the browser listens for, optional AI matching, and Whisper for a spoken answer the rules could not place
+const SPEECH_LANG = window.GS_SPEECH_LANG || 'en-GB';
+const AI_URL = window.GS_AI_URL || '';
+// Google Apps Script web app (scripts/completions.gs) that keeps each completion and its plan page. Empty: nothing is sent.
+const SHEET_URL = window.GS_SHEET_URL || '', SHEET_KEY = window.GS_SHEET_KEY || '';
+// /api/story writes the "About you" story from facts with no health information. Empty: the rule-based story is used.
+const STORY_URL = window.GS_STORY_URL || '';
+let planCache = null, storyWait = null;
+let sentRef = '', planRef = '';
+const newRef = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)).replace(/[^a-zA-Z0-9]/g, '');
+const TRANSCRIBE_URL = window.GS_TRANSCRIBE_URL || '';
+let transcribeOn = !!TRANSCRIBE_URL;
+const SILENCE_MS = 800, MAX_LISTEN_MS = 20000;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const $ = id => document.getElementById(id), T = $('thread');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scrollEnd = () => window.scrollTo({ top: document.body.scrollHeight, behavior: reduce ? 'auto' : 'smooth' });
+const visible = q => !q.show || q.show(A);
+const secIdx = q => SECTIONS.findIndex(s => s.id === q.s);
+const label = o => o.replace(/ - .*/, '');
+const rowOpts = q => q.rows[row][2] || q.cols;   // a grid row has its own options, or shares the grid's columns   // "Nutrition - how you eat…" shows as "Nutrition" on a chip
+function stepRow(q) {
+  row++;
+  while (row < q.rows.length && q.rows[row][3] && !q.rows[row][3](A)) row++;
+  return row < q.rows.length;
+}
+
+function bot(html, small, kind) { const d = document.createElement('div'); d.className = 'msg ' + (kind || 'say'); d.innerHTML = `<span class="av"><img src="${SYM}" alt=""></span><div class="bub">${html}${small ? `<small>${small}</small>` : ''}</div>`; T.append(d); return d; }
+function me(text) { const d = document.createElement('div'); d.className = 'msg me'; d.innerHTML = `<div class="bub">${esc(text)}</div>`; T.append(d); scrollEnd(); }
+function typing(ms) { return new Promise(res => { if (reduce || !ms) return res(); const d = document.createElement('div'); d.className = 'msg typing'; d.innerHTML = `<span class="av"><img src="${SYM}" alt=""></span><div class="bub"><i></i><i></i><i></i></div>`; T.append(d); scrollEnd(); setTimeout(() => { d.remove(); res(); }, ms); }); }
+const clearChips = () => T.querySelectorAll('.choices,.chips').forEach(e => e.remove());
+function composer(on, hint) { $('inrow').classList.toggle('off', !on); $('txt').disabled = !on; $('send').disabled = !on; $('mic').disabled = !on; $('hint').textContent = hint || ''; }
+function progress() {
+  const q = QUESTIONS[qi], i = q ? secIdx(q) : SECTIONS.length;
+  $('cnt').textContent = q ? `Find your Good Span · ${i + 1} of ${SECTIONS.length}` : 'Complete';
+  $('bar').style.width = (q ? i / SECTIONS.length * 100 : 100) + '%';
+}
+function sectionCard(i) {
+  const s = SECTIONS[i], p = PILLAR[s.id], d = document.createElement('section'); d.className = 'sec';
+  d.innerHTML = `<div class="stx"><p class="ui">${i + 1} of ${SECTIONS.length}${p ? ' · ' + p[2] : ''}</p><h2>${esc(s.title)}</h2>${s.intro ? `<p>${esc(s.intro)}</p>` : ''}</div>${IMG[s.id] ? `<div class="photo"><img src="${IMG[s.id]}" alt="${esc(ALT[s.id])}"></div>` : ''}`;
+  T.append(d);
+}
+
+async function ask(fast) {
+  ready = false; misses = 0;
+  while (qi < QUESTIONS.length && !visible(QUESTIONS[qi])) qi++;
+  progress();
+  if (qi >= QUESTIONS.length) return finish();
+  const q = QUESTIONS[qi], si = secIdx(q);
+  if (si !== secShown) { secShown = si; await typing(fast ? 0 : 350); sectionCard(si); }
+  await typing(fast ? 0 : 450);
+  if (row === 0 && LEAD[q.id]) bot(esc(LEAD[q.id]), '', 'lead');
+  if (q.type === 'grid') {
+    // a grid becomes a short run of questions: the shared lead-in once, then each row asked on its own
+    while (row < q.rows.length && q.rows[row][3] && !q.rows[row][3](A)) row++;
+    if (row >= q.rows.length) return next();
+    const shown = gridRows(q, A), at = shown.findIndex(r => r[0] === q.rows[row][0]);
+    const own = (ROWQ[q.id] || {})[q.rows[row][0]];
+    if (at === 0 && !ROWQ[q.id]) bot(esc(q.text) + (q.hint ? `<span class="qh">${esc(q.hint)}</span>` : ''), shown.length > 1 ? `${shown.length} short parts` : '', 'lead');
+    bot(esc(own || q.rows[row][1]), shown.length > 1 && !ROWQ[q.id] ? `${at + 1} of ${shown.length}` : '', 'q');
+  } else bot(esc(q.text) + (q.hint && q.type !== 'habit' ? `<span class="qh">${esc(q.hint)}</span>` : ''), q.type === 'multi' ? (q.max ? `Choose up to ${q.max}` : 'Choose all that apply') : '', 'q');
+  options(q); ready = true;
+  if (FIXED.has(q.id)) composer(true, q.type === 'multi' ? 'Tap what applies, or say it. I will check it with you.' : 'Tap an option, or say it. I will check it with you.');
+  else if (q.type === 'habit') composer(true, 'Type it in your own words, or skip it.');
+  else if (q.type === 'text') composer(true, 'Type a few words, or skip.');
+  else composer(true, q.type === 'multi' ? 'Talk or tap the options.' : 'Tap an option, or type it your way.');
+  if (mode === 'talk') listen();
+  scrollEnd();
+}
+const list2 = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+
+function options(q, pre) {
+  clearChips(); sel = new Set(pre || []);
+  if (q.type === 'multi') {
+    const wrap = document.createElement('div'); wrap.className = 'choices';
+    const box = document.createElement('div'); box.className = 'chips';
+    const go = document.createElement('button'); go.type = 'button'; go.className = 'done'; go.textContent = 'Done';
+    const render = () => {
+      box.innerHTML = q.options.map(o => `<button type="button" class="chip" aria-pressed="${sel.has(o)}" data-o="${esc(o)}">${esc(label(o))}</button>`).join('');
+      go.disabled = !sel.size;
+    };
+    render();
+    box.onclick = e => {
+      const b = e.target.closest('.chip'); if (!b) return;
+      const o = b.dataset.o;
+      if (sel.has(o)) sel.delete(o);
+      else { if (NONE_WORDS.test(o) || o === 'I’m not sure yet') sel.clear(); else [...sel].filter(x => NONE_WORDS.test(x) || x === 'I’m not sure yet').forEach(x => sel.delete(x)); if (q.max && sel.size >= q.max) return; sel.add(o); }
+      render();
+    };
+    go.onclick = () => { if (!sel.size) return; answer(q, [...sel], 'tapped'); };
+    wrap.append(box, go); T.append(wrap); return;
+  }
+  const box = document.createElement('div'); box.className = 'chips';
+  if (q.type === 'grid') {
+    box.innerHTML = rowOpts(q).map(o => `<button type="button" class="chip" data-o="${esc(o)}">${esc(o)}</button>`).join('');
+    box.onclick = e => { const b = e.target.closest('.chip'); if (!b) return; answerGrid(q, b.dataset.o); };
+  } else if (q.type === 'habit') {
+    box.innerHTML = `<button type="button" class="chip alt" data-skip="1">Skip this one</button>`;
+    box.onclick = e => { if (e.target.closest('[data-skip]')) { A[q.id] = null; me('Skip'); next(); } };
+  } else if (q.type === 'text') {
+    box.innerHTML = `<button type="button" class="chip alt" data-skip="1">Skip this</button>`;
+    box.onclick = e => { if (e.target.closest('[data-skip]')) { A[q.id] = ''; me('Skip'); next(); } };
+  } else if (q.type === 'single') {
+    box.innerHTML = q.options.map(o => `<button type="button" class="chip" data-o="${esc(o)}">${esc(label(o))}</button>`).join('');
+    box.onclick = e => { const b = e.target.closest('.chip'); if (b) answer(q, [b.dataset.o], 'tapped'); };
+  }
+  T.append(box);
+}
+
+// ---- matching a typed answer to the existing options (stand-in for the AI step; it always confirms) ----
+const NUM = { couple: 2, few: 3, zero: 0, none: 0, never: 0, one: 1, once: 1, a: null, two: 2, twice: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
+function numIn(t) {
+  t = t.replace(/(\d),(\d{3})/g, '$1$2');
+  let m = t.match(/(\d+(?:\.\d+)?)\s*k\b/); if (m) return +m[1] * 1000;
+  if (/half an hour|half hour/.test(t)) return 30;
+  m = t.match(/\d+(?:\.\d+)?/); let n = m ? +m[0] : null;
+  if (n == null) for (const w of t.split(/[^a-z]+/)) if (NUM[w] != null) { n = NUM[w]; break; }
+  if (n == null && /\bno (days?|times?|hours?|minutes?|drinks?|portions?|meals?|nights?)\b/.test(t)) n = 0;
+  if (n == null && /\ban hour\b/.test(t)) n = 1;
+  if (n != null && /hour/.test(t) && !/min/.test(t) && /minute|min\b/i.test(QUESTIONS[qi].text)) n *= 60;
+  return n;
+}
+function band(o) {
+  const s = o.replace(/,/g, '').replace(/–/g, '-');
+  let m = s.match(/^(?:Less|Fewer) than (\d+(?:\.\d+)?)/i); if (m) return [-Infinity, +m[1] - 1e-9];
+  m = s.match(/^(?:More than )(\d+(?:\.\d+)?)/i); if (m) return [+m[1] + 1e-9, Infinity];
+  m = s.match(/^(\d+(?:\.\d+)?)\s*(?:or more|\+)/i); if (m) return [+m[1], Infinity];
+  m = s.match(/^(?:About )?(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/i); if (m) return [+m[1], +m[2]];
+  m = s.match(/^(\d+(?:\.\d+)?)$/); if (m) return [+m[1], +m[1]];
+  m = s.match(/^(\d+(?:\.\d+)?) (?:day|time|hour|minute|night|portion|drink|meal)/i); if (m) return [+m[1], +m[1]];
+  return null;
+}
+const STOP = new Set('the and for with that this what your you have from about more less most some into than them they just like really very much also when then been being does dont doesnt didnt would could should there their about over each make made much usually typically mostly often sometimes week weeks days daily'.split(' '));
+const words = t => t.toLowerCase().replace(/[’']/g, '').split(/[^a-z]+/).filter(w => w.length > 3 && !STOP.has(w)).map(w => w.replace(/(ing|ers|er|es|s|ed|ly)$/, ''));
+function interpret(q, raw) {
+  const t = raw.toLowerCase().trim();
+  if (q.type === 'habit') return raw.trim() ? [raw.trim()] : null;
+  const opts = q.options, none = opts.find(o => NONE_WORDS.test(o));
+  // "no idea", "not sure": the option that says so, if there is one; otherwise ask again (never guess)
+  if (/\b(no idea|not sure|unsure|don'?t know|dunno|hard to say|can'?t say)\b/.test(t.replace(/[’]/g, "'"))) { const u = opts.find(o => /not sure|don['’]t know|don['’]t track/i.test(o)); return u ? [u] : null; }
+  if (none && /^(none|nothing|no\b|not really|nope)/.test(t)) return [none];
+  if (/prefer not/.test(t)) { const p = opts.find(o => /^Prefer not/.test(o)); if (p) return [p]; }
+  // the option's own wording typed in full wins (e.g. "1-2 hours")
+  const norm = x => x.toLowerCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ');
+  const exact = opts.filter(o => norm(t).includes(norm(label(o))) && label(o).length > 2);
+  if (exact.length) {
+    const ranked = exact.sort((a, b) => label(b).length - label(a).length);
+    if (q.type === 'single') return [ranked[0]];
+    return ranked.slice(0, q.max || 99);
+  }
+  if (q.type === 'single') {
+    const unit = x => (x.match(/\b(day|week|month|night|year)s?\b/i) || [])[1];
+    const tu = unit(t);
+    const bands = opts.map(o => (tu && unit(o) && unit(o).toLowerCase() !== tu.toLowerCase()) ? null : band(o));
+    if (bands.filter(Boolean).length >= 2) {
+      if (/every ?day|daily|every night/.test(t)) { const o = opts.find(x => /^(7|6-7|6–7)/.test(x)); if (o) return [o]; }
+      if (/most days|most nights/.test(t)) { const o = opts.find(x => /^(5|3-5|3–5)/.test(x)); if (o) return [o]; }
+      if (/rarely|hardly|never/.test(t)) { const o = opts.find(x => /^(0|Never|Rarely)/.test(x)); if (o) return [o]; }
+      const n = numIn(t);
+      if (n != null) { const hits = bands.map((b, k) => b && n >= b[0] && n <= b[1] ? k : -1).filter(k => k >= 0); const i = hits.length > 1 ? (hits.find(k => bands[k][0] === n) ?? hits[0]) : hits[0] ?? -1; if (i >= 0) return [opts[i]]; const nb = bands.map((b, k) => b ? [Math.min(Math.abs(n - b[0]), Math.abs(n - b[1])), k] : [Infinity, k]).sort((a, b) => a[0] - b[0])[0]; if (nb[0] < Infinity) return [opts[nb[1]]]; }
+    }
+  }
+  const tw = new Set(words(t)); if (!tw.size) return null;
+  const sc = opts.map(o => [words(o).filter(w => tw.has(w)).length, o]).filter(x => x[0] > 0 && !NONE_WORDS.test(x[1]));
+  if (!sc.length) return null;
+  sc.sort((a, b) => b[0] - a[0]);
+  if (q.type === 'single') return sc.length > 1 && sc[0][0] === sc[1][0] ? null : [sc[0][1]];
+  // a shared word such as "blood" must not pull in a second condition when a stronger option already covers it
+  const covered = new Set();
+  const kept = [];
+  for (const [, o] of sc) {
+    const ws = words(o).filter(w => tw.has(w));
+    if (ws.every(w => covered.has(w))) continue;
+    ws.forEach(w => covered.add(w));
+    kept.push(o);
+  }
+  return kept.slice(0, q.max || 99);
+}
+// A match is obvious when they said the option itself, or a number that fits only one band.
+// A fuzzy word match, or a guess from the AI, still asks "Is that right?".
+function obviousMatch(q, text, v) {
+  if (!v || !v.length || !text) return false;
+  const norm = x => String(x).toLowerCase().replace(/[–—]/g, '-').replace(/[’']/g, '').replace(/\s+/g, ' ').trim();
+  const t = norm(text);
+  if (v.every(o => { const lab = norm(label(o)); return lab.length > 2 && t.includes(lab); })) return true;
+  if (q.type !== 'single' || v.length !== 1) return false;
+  const n = numIn(t);
+  if (n == null) return false;
+  const hits = (q.options || []).filter(o => { const b = band(o); return b && n >= b[0] && n <= b[1]; });
+  return hits.length === 1 && hits[0] === v[0];
+}
+function takeAnswer(q0, q, v, src) {
+  clearChips();
+  bot(`Noted: <b>${esc(v.map(label).join(', '))}</b>.`);
+  if (q0.type === 'grid') {
+    how[q0.id] = src;
+    A[q0.id] = Object.assign({}, A[q0.id], { [q0.rows[row][0]]: v[0] });
+    if (stepRow(q0)) return ask();
+    return next();
+  }
+  A[q.id] = q.type === 'multi' ? v : v[0]; how[q.id] = src; maybeMore(q);
+}
+function saidYes(t) {
+  t = String(t || '').toLowerCase().replace(/[’']/g, "'").replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+  return /^(yes|yeah|yep|yup|correct|that's right|that is right|yes that's right|yes that is right|yes please)$/.test(t);
+}
+function saidNo(t) {
+  t = String(t || '').toLowerCase().replace(/[’']/g, "'").replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+  return /^(no|nope|nah|change|change it|wrong|that's wrong|that is wrong|not quite)$/.test(t);
+}
+function missed(q0) {
+  if (++misses >= 2) {
+    pending = null; stopListen(); clearChips();
+    bot("Let's make this one easy: tap the option that fits best.");
+    options(q0);
+    composer(false, 'Tap the one that fits best.');
+    scrollEnd();
+    return;
+  }
+  bot("I didn't quite catch that. Could you say it another way, or tap one of the options?");
+  scrollEnd();
+  if (mode === 'talk') listen();
+}
+
+async function typed() {
+  const raw = $('txt').value.trim();
+  const clip = voiceClip; voiceClip = null;
+  const spoke = viaVoice || !!clip; viaVoice = false;
+  if ((!raw && !clip) || !ready) return;
+  stopListen();
+  if (stage === 'contact') { if (raw) return typedContact(raw); return; }
+  if (stage === 'open') return typedOpen(raw, clip, spoke);
+  if (moreQ) {
+    $('txt').value = '';
+    const said = (raw || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+    if (!said) return;
+    me(said);
+    A.more = Object.assign({}, A.more, { [moreQ]: said });
+    moreQ = null; clearChips();
+    return next();
+  }
+  if (stage !== 'questions') return;
+  if (qi >= QUESTIONS.length) return;
+  const q0 = QUESTIONS[qi]; const q = q0.type === 'grid' ? { id: q0.id, type: 'single', options: rowOpts(q0), text: ROWQ[q0.id] ? ROWQ[q0.id][q0.rows[row][0]] : `${q0.text} ${q0.rows[row][1]}` } : q0;
+  if (pending && raw && (saidYes(raw) || saidNo(raw))) {
+    $('txt').value = '';
+    const yes = saidYes(raw), p = pending; pending = null;
+    if (!yes) me(raw);
+    return yes ? p.accept() : p.redo();
+  }
+  $('txt').value = '';
+  const src = spoke ? 'spoken' : 'typed';
+  let said = raw, fromWhisper = false;
+  if (spoke && clip && needsWhisper(q)) {
+    const w = bot('<span class="thinking">One moment…</span>');
+    const text = await whisperText(q, clip, true);
+    w.remove();
+    if (text) { said = text; fromWhisper = true; }
+  }
+  if (!said) return missed(q0);
+  if (pending && (saidYes(said) || saidNo(said))) {
+    const yes = saidYes(said), p = pending; pending = null;
+    if (!yes) me(said);
+    return yes ? p.accept() : p.redo();
+  }
+  if (pending) { pending = null; clearChips(); }
+  me(said);
+  if (q0.type === 'text') { A[q0.id] = said.replace(/\s+/g, ' ').trim().slice(0, 600); how[q0.id] = src; return next(); }
+  if (q.type === 'habit') { A[q.id] = { text: said }; how[q.id] = src; await typing(350); bot('Thanks. Would you like to keep this private, or share it with your Pilot?', '', 'say'); habitChoice(q); return; }
+  const browserAlts = alts.filter(a => a && a !== raw); alts = [];
+  let v = null, fromAi = false, used = said;
+  const ruleHit = interpret(q, said);
+  const browserHit = raw && raw !== said ? interpret(q, raw) : null;
+  if (ruleHit && obviousMatch(q, said, ruleHit)) { v = ruleHit; used = said; }
+  else if (browserHit && obviousMatch(q, raw, browserHit)) { v = browserHit; used = raw; }
+  else if (AI_URL && said) {
+    const w = bot('<span class="thinking">One moment…</span>');
+    v = await aiInterpret(q, said, (fromWhisper ? [raw, ...browserAlts] : browserAlts).filter(Boolean).slice(0, 2));
+    fromAi = !!v; w.remove();
+    if (!v && ruleHit) { v = ruleHit; used = said; fromAi = false; }
+    else if (!v && browserHit) { v = browserHit; used = raw; fromAi = false; }
+  } else if (ruleHit) { v = ruleHit; used = said; }
+  else if (browserHit) { v = browserHit; used = raw; }
+  if (v) await typing(200);
+  if (!v) return missed(q0);
+  if (spoke && !FIXED.has(q.id) && !fromAi && obviousMatch(q, used, v)) return takeAnswer(q0, q, v, src);
+  misses = 0;
+  clearChips();
+  bot(`I've noted <b>${esc(v.map(label).join(', '))}</b>. Is that right?`);
+  const box = document.createElement('div'); box.className = 'chips';
+  box.innerHTML = `<button type="button" class="chip go" data-y="1">Yes, that's right</button><button type="button" class="chip alt" data-n="1">Change it</button>`;
+  const accept = () => { pending = null; if (q0.type === 'grid') { how[q0.id] = src; return answerGrid(q0, v[0], true); } answer(q, v, src, true); };
+  const redo = () => { pending = null; box.remove(); bot('No problem. Pick the right one below, or try again in your own words.'); options(q0, q.type === 'multi' ? v : null); composer(true, 'Tap an option, or say it again.'); scrollEnd(); if (mode === 'talk') listen(); };
+  box.onclick = e => { const b = e.target.closest('.chip'); if (!b) return; b.dataset.y ? accept() : redo(); };
+  pending = { accept, redo };
+  T.append(box);
+  composer(true, "Say yes if that's right, or change it.");
+  scrollEnd();
+  if (mode === 'talk') listen();
+}
+function habitChoice(q) {
+  clearChips(); const box = document.createElement('div'); box.className = 'chips';
+  box.innerHTML = q.options.map(o => `<button type="button" class="chip" data-o="${esc(o)}">${esc(o)}</button>`).join('');
+  box.onclick = e => { const b = e.target.closest('.chip'); if (!b) return; A[q.id].choice = b.dataset.o; me(b.dataset.o); next(); };
+  T.append(box); composer(false, ''); scrollEnd();
+}
+function answer(q, v, src, confirmed) {
+  clearChips(); me(confirmed ? "Yes, that's right" : v.map(label).join(', '));
+  A[q.id] = q.type === 'multi' ? v : v[0]; how[q.id] = src; maybeMore(q);
+}
+function choseElse(q) {
+  return !!pickedDetail(q.options, A[q.id]);
+}
+function maybeMore(q) {
+  if (!choseElse(q) && A.more) delete A.more[q.id];
+  if (choseElse(q)) return askMore(q);
+  next();
+}
+async function askMore(q) {
+  moreQ = q.id; ready = false; pending = null;
+  await typing(reduce ? 0 : 280);
+  bot("Tell us a little more, if you'd like.", 'A few words is enough', 'q');
+  clearChips();
+  const box = document.createElement('div'); box.className = 'chips';
+  box.innerHTML = `<button type="button" class="chip alt" data-skip="1">Skip this</button>`;
+  box.onclick = () => { if (moreQ !== q.id) return; moreQ = null; box.remove(); me('Skip'); if (A.more) delete A.more[q.id]; next(); };
+  T.append(box);
+  composer(true, 'Type a few words, or skip.');
+  ready = true; scrollEnd();
+  if (mode === 'talk') listen();
+}
+function answerGrid(q, col, typedIn) {
+  clearChips(); me(typedIn ? "Yes, that's right" : col);
+  A[q.id] = Object.assign({}, A[q.id], { [q.rows[row][0]]: col }); if (!typedIn && !['typed', 'spoken'].includes(how[q.id])) how[q.id] = 'tapped';
+  if (stepRow(q)) return ask(); next();
+}
+async function next() {
+  const q = QUESTIONS[qi]; row = 0; qi++;
+  const ack = ACK[q.id] && !FIXED.has(q.id) || q.id === 'q32' ? ACK[q.id](A) : '';
+  if (q.id === 'q1') { const a = (A.q1 || []).map(label).filter(x => !/not sure/.test(x)); await typing(350); bot(a.length ? `Thanks${name ? ', ' + esc(name) : ''}. We'll ask about every area, and keep ${esc(a.join(' and '))} front of mind.` : `That's fine${name ? ', ' + esc(name) : ''}. We'll let your answers show where to start.`); }
+  else if (ack) { await typing(350); bot(esc(ack)); }
+  ask();
+}
+// one short line where it adds something: what already works, and the limits they've set. Rules only; no advice, no judgement.
+const G = (q, r) => (A[q] || {})[r];
+const ACK = {
+  q7: A => G('q7', 'veg') === '5 or more portions' ? 'Five or more portions of vegetables and fruit a day. You already have strong foundations here.'
+    : ['3–5', 'More than 5'].includes(G('q7', 'cooked')) ? "You cook most of your main meals at home. Useful to know: we'll build on that." : '',
+  q12: A => ({ '7-8': 'Seven to eight hours most nights. A good base to build from.', '8-9': 'Eight to nine hours most nights. A good base to build from.' })[A.q12] || '',
+  q17: A => Object.values(A.q17 || {}).filter(v => v === 'I already do this').length >= 4 ? "You already have quite a few good sleep habits in place. We'll build on them rather than asking you to start again." : '',
+  q21: A => { if (!A.q20 || !A.q21) return ''; const w = +A.q20 * (A.q21 === '150 or more' ? 150 : +A.q21); return w >= 150 ? `That's around ${w} minutes a week, already within the guideline. We won't ask you for more of the same.` : w ? `Thanks. That's around ${w} minutes a week.` : ''; },
+  q22: A => ({ '2': "You're already doing strength work twice a week. Useful to know: we'll build on that rather than asking you to start again.", '3 or more': "You're already doing strength work three or more times a week. We'll build on that rather than asking you to start again." })[A.q22] || '',
+  q24: A => ['8,000-9,999', '10,000 or more'].includes(A.q24) ? "That's a good number of steps on a typical day." : '',
+  q30: A => ['2 to 3 hours', 'More than 3 hours'].includes(A.q30) ? "Time in nature most weeks. We'll make sure your Good Span protects that." : '',
+  q32: A => Object.values(A.q32 || {}).some(v => /More than half|Nearly every/.test(v)) ? "Thank you for telling us. We'll keep it in mind." : '',
+  q34: A => (A.q34 || []).some(x => !NONE_WORDS.test(x)) ? "Good to know what already helps you. We'll build on it." : '',
+  q36: A => G('q36', 'meet') === 'Weekly or more' ? 'Seeing people you care about every week matters more than most people think.' : '',
+  q55: A => !A.q55 ? '' : A.q55 === 'It varies' ? "That's fine. We'll keep your Good Span light enough to fit the weeks that are busier." : `${label(A.q55)} a week. We'll plan for the lower end, so it stays realistic.`,
+  q56: A => /^Small/.test(A.q56 || '') ? 'Small, easy steps it is.' : /^A bigger/.test(A.q56 || '') ? "A bigger challenge it is, at a pace that's still safe for you." : '',
+  q57: A => { const o = (A.q57 || []).filter(x => !NONE_WORDS.test(x) && x !== 'Something else'); const extra = (A.q57 || []).includes('Something else') ? "We'll keep what you added in mind." : ''; const named = o.length ? `Noted. We won't suggest ${list2(o.map(x => x.charAt(0).toLowerCase() + x.slice(1).replace(/\bI\b/g, 'you').replace(/\bmy\b/g, 'your')))}.` : ''; return [named, extra].filter(Boolean).join(' '); },
+};
+
+function show(id, v, withNote) {
+  const q = QUESTIONS.find(x => x.id === id);
+  if (v == null) return '';
+  const text = q.type === 'text' ? String(v || '').trim() : q.type === 'grid' ? gridRows(q, A).map(r => `${r[1]}: ${v[r[0]] || '—'}`).join('; ') : q.type === 'habit' ? [v.text, v.choice].filter(Boolean).join(' · ') : [].concat(v).map(label).join(', ');
+  if (withNote === false) return text;
+  const note = ((A.more || {})[id] || '').replace(/\s+/g, ' ').trim();
+  const detail = pickedDetail(q.options, v);
+  return detail && note ? text.replace(detail, detail + ': ' + note) : text;
+}
+function finish() {
+  composer(false, ''); clearChips(); $('comp').hidden = true;
+  improveStory();
+  const planLink = sendCompletion();
+  const ids = QUESTIONS.filter(q => A[q.id] !== undefined), typedN = ids.filter(q => ['typed', 'spoken'].includes(how[q.id])).length;
+  const d = document.createElement('section'); d.className = 'sum';
+  d.innerHTML = `<div class="hd"><p class="ui">Find your Good Span · complete</p><h2>Thank you${name ? ', ' + esc(name) : ''}. Your Good Span is ready.</h2></div>
+    <div class="bd"><p>We've used your answers to map your Starting Position, find where your effort will count most, and choose your first practices.</p>
+    ${planLink ? `<p class="planlink">Your plan page is saved. <a href="${esc(planLink)}" target="_blank" rel="noopener">${esc(planLink)}</a></p>` : ''}
+    <div class="nextp"><button type="button" class="chip go" id="see">See my Good Span</button><button type="button" class="chip alt" id="again">Start again</button></div>
+    <details><summary>Your answers (${ids.length} questions, ${typedN} in your own words)</summary>
+    ${SECTIONS.map(s => { const qs = ids.filter(q => q.s === s.id); return qs.length ? `<details><summary>${esc(s.title)}</summary><dl>${qs.map(q => `<dt>${esc(q.text)}</dt><dd>${esc(show(q.id, A[q.id]))}<span class="how">${how[q.id] === 'spoken' ? 'Spoken' : how[q.id] === 'typed' ? 'In your words' : 'Tapped'}</span></dd>`).join('')}</dl></details>` : ''; }).join('')}</details></div>`;
+  T.append(d); $('again').onclick = restart; $('see').onclick = openPlan; progress(); scrollEnd();
+}
+// the member's Good Span, built from these answers by the same engine and rules as the standard assessment
+function planNow() {
+  if (planCache) return planCache;
+  const r = buildResult(name, A, { E: makeEngine(GS_DATA), DATA: GS_DATA, toFeatures, profile: gsProfile });
+  if (!planRef) planRef = newRef();
+  r.interest = { url: SHEET_URL, ref: planRef, email: contact.email || '', name: contact.name || name || '' };
+  planCache = renderPlan(r);
+  return planCache;
+}
+// asks for the AI-written story (at most 12 seconds); keeps the rule-based one if anything goes wrong
+function improveStory() {
+  if (storyWait) return storyWait;
+  storyWait = (async () => {
+    let p; try { p = planNow(); } catch (e) { return null; }
+    if (!STORY_URL || !p.r.storyFacts) return p;
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 12000);
+    try {
+      const res = await fetch(STORY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal, body: JSON.stringify({ facts: Object.assign({}, p.r.storyFacts, { answers: storyAnswers() }) }) });
+      const d = res.ok ? await res.json() : null;
+      if (d && d.heading && Array.isArray(d.paragraphs) && d.paragraphs.length === 2) { p.r.story = { heading: d.heading, paras: d.paragraphs, source: 'ai' }; planCache = renderPlan(p.r); }
+    } catch (e) { console.warn('Story not written', e); } finally { clearTimeout(t); }
+    return planCache;
+  })();
+  return storyWait;
+}
+// the member's answers as they saw them, for the summary: no contact details, and a personal habit kept private stays out
+function storyAnswers() {
+  return QUESTIONS.filter(q => A[q.id] !== undefined && q.type !== 'text' && !(q.type === 'habit' && !/Share/.test((A[q.id] || {}).choice || '')))
+    .map(q => ({ section: (SECTIONS.find(s => s.id === q.s) || {}).title || '', question: q.text, answer: show(q.id, A[q.id], !['q4', 'q5', 'q11', 'q13', 'q29'].includes(q.id)) }));
+}
+function renderPlan(r) {
+  const img = { Nutrition: IMG.nutrition, Sleep: IMG.sleep, Movement: IMG.movement, Mind: IMG.mind, Connection: IMG.connection, Prevention: IMG.prevention, Stretch: IMG.sleep };
+  const html = RESULT_TPL.replace('_' + '_IMG__', () => JSON.stringify(img)).replace('_' + '_DATA__', () => JSON.stringify([r]).replace(/</g, '\\u003c'));
+  return { r, html };
+}
+function planPageLink(id) {
+  if (!SHEET_URL || !id) return '';
+  return SHEET_URL + (SHEET_URL.includes('?') ? '&' : '?') + 'plan=' + id;
+}
+// one completion to the Google Sheet: contact details, every answer as shown to the member, a plan summary, the plan page and its link
+function sendCompletion() {
+  if (!SHEET_URL || sentRef) return '';
+  try { planNow(); } catch (e) { console.error(e); return ''; }
+  sentRef = planRef || newRef();
+  const planLink = planPageLink(sentRef);
+  // a personal habit kept private stays in the member's Journal: it never goes to the Sheet (the Pilot's copy)
+  const habitShared = A.q54 && /Share/.test(A.q54.choice || '');
+  const answers = QUESTIONS.filter(q => A[q.id] !== undefined && !(q.id === 'q54' && !habitShared)).map(q => ({ section: (SECTIONS.find(s => s.id === q.s) || {}).title || '', question: q.text, answer: show(q.id, A[q.id]), how: how[q.id] === 'spoken' ? 'Spoken' : how[q.id] === 'typed' ? 'Typed' : 'Tapped' }));
+  if (planLink) answers.push({ section: '', question: 'Plan page', answer: planLink, how: 'Tapped' });
+  const ref = sentRef;
+  improveStory().then(p => { if (!p) return;
+  const r = p.r, body = { key: SHEET_KEY, planId: ref, story: [r.story && r.story.heading, ...(r.story && r.story.paras || [])].filter(Boolean).join('\n\n'), storySource: (r.story && r.story.source) || '', submittedAt: new Date().toISOString(), source: 'conversation', version: 'October 2026',
+    name: contact.name || name || '', email: contact.email || '', opening: (A.q0 && A.q0.text) || '', answers,
+    plan: { focus: r.focus, recommended: r.practices.filter(x => x.rec).map(x => x.fam), extras: r.practices.filter(x => !x.rec).map(x => x.fam), own: r.own && r.own.shared ? r.own.text + ' (shared with Pilot)' : '' },
+    planHtml: '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your Good Span</title></head><body>' + p.html + '</body></html>' };
+  // text/plain avoids a CORS preflight, which Apps Script doesn't answer; the response can't be read, so the link is made from the id
+  fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).catch(e => console.warn('Completion not sent', e));
+  });
+  return planLink;
+}
+async function openPlan() {
+  const btn = $('see'); if (btn) { btn.disabled = true; btn.textContent = 'Preparing your Good Span…'; }
+  let r, html;
+  try { ({ r, html } = (await improveStory()) || planNow()); }
+  catch (e) { console.error(e); if (btn) { btn.disabled = false; btn.textContent = 'See my Good Span'; } alert("Sorry, we couldn't build your Good Span from these answers."); return; }
+  if (btn) { btn.disabled = false; btn.textContent = 'See my Good Span'; }
+  // shown in its own frame over the conversation, so the page runs exactly as the result page does
+  const f = document.createElement('iframe'); f.id = 'plan'; f.title = 'Your Good Span';
+  f.srcdoc = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>' + html + '</body></html>';
+  document.body.append(f); document.documentElement.classList.add('planon'); window.scrollTo(0, 0);
+}
+
+// the welcome is a conversation too: name and email, one at a time
+const CONTACT = [
+  ['name', () => 'What would you like us to call you?', 'Your first name', 'text'],
+  ['email', () => `Nice to meet you${contact.name ? ', ' + esc(contact.name) : ''}. What's the best email address for you?`, 'you@example.com', 'email']
+];
+async function askContact(fast) {
+  ready = false; const c = CONTACT[ci];
+  await typing(fast ? 0 : 450);
+  bot(c[1](), '', 'q');
+  $('txt').placeholder = c[2]; $('txt').setAttribute('inputmode', c[3]); $('txt').setAttribute('autocomplete', c[0] === 'name' ? 'given-name' : c[0] === 'email' ? 'email' : 'tel');
+  composer(true, c[0] === 'name' ? 'Talk or type.' : ''); ready = true; scrollEnd(); if (!fast) $('txt').focus({ preventScroll: true });
+}
+async function typedContact(raw) {
+  const c = CONTACT[ci];
+  if (c[0] === 'email' && !raw.includes('@')) raw = raw.toLowerCase().replace(/\s+at\s+/g, '@').replace(/\s+dot\s+/g, '.').replace(/\s+/g, '');
+  me(raw); $('txt').value = '';
+  if (c[0] === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)) { await typing(350); bot("That doesn't look quite like an email address. Could you check it?"); scrollEnd(); return; }
+  if (c[0] === 'mobile' && (raw.match(/\d/g) || []).length < 7) { await typing(350); bot('Could you check that number? It looks a little short.'); scrollEnd(); return; }
+  contact[c[0]] = c[0] === 'name' ? raw.split(/\s+/)[0].replace(/^./, x => x.toUpperCase()) : raw;
+  if (++ci < CONTACT.length) return askContact();
+  name = contact.name || ''; ready = false;
+  $('txt').placeholder = 'Type your answer, or tap an option'; $('txt').setAttribute('inputmode', 'text'); $('txt').setAttribute('autocomplete', 'off');
+  composer(false, '');
+  askOpen();
+}
+
+// ---- the opening question, in their own words; one follow-up at most
+const OPEN_CHIPS = ['energy', 'sleep', 'stress', 'mood', 'fitness', 'ease', 'food', 'connection', 'health'];
+async function askOpen() {
+  stage = 'open'; ready = false; $('prog').hidden = false; await typing(500);
+  bot('If the next six months went really well, what would you most like to feel different?', 'Choose up to 3', 'q');
+  sel = new Set(); const wrap = document.createElement('div'); wrap.className = 'choices';
+  const box = document.createElement('div'); box.className = 'chips';
+  const go = document.createElement('button'); go.type = 'button'; go.className = 'done'; go.textContent = 'Done';
+  const TH = buildResult.THEMES;
+  const render = () => {
+    box.innerHTML = OPEN_CHIPS.map(k => `<button type="button" class="chip" aria-pressed="${sel.has(k)}" data-k="${k}">${esc(cap1(TH[k].label))}</button>`).join('') + `<button type="button" class="chip alt" data-ns="1">I'm not sure yet</button>`;
+    go.disabled = !sel.size;
+  };
+  render();
+  box.onclick = e => { const b = e.target.closest('.chip'); if (!b) return;
+    if (b.dataset.ns) { wrap.remove(); me("I'm not sure yet"); return openAnswered('', []); }
+    const k = b.dataset.k; sel.has(k) ? sel.delete(k) : sel.size < 3 && sel.add(k); render(); };
+  go.onclick = () => { if (!sel.size) return; wrap.remove(); const ks = [...sel]; const t = cap1(list2(ks.map(k => TH[k].label))); me(t); return openAnswered(t, ks, true); };
+  wrap.append(box, go); T.append(wrap); composer(true, 'Tap, type or talk.'); ready = true; if (mode === 'talk') listen(); scrollEnd();
+}
+const cap1 = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+async function typedOpen(raw, clip, spoke) {
+  if (!raw && !(spoke && clip)) return;
+  $('txt').value = '';
+  const TH = buildResult.THEMES, keys = Object.keys(TH);
+  const openQ = { id: 'q0', type: 'multi', max: 3, text: 'If the next six months went really well, what would you most like to feel different?', options: keys.map(k => TH[k].label) };
+  let said = raw;
+  if (spoke && clip && needsWhisper(openQ)) {
+    const w = bot('<span class="thinking">One moment…</span>');
+    const text = await whisperText(openQ, clip, true);
+    w.remove();
+    if (text) said = text;
+  }
+  if (!said) { bot("I didn't quite catch that. Could you say it another way?"); scrollEnd(); if (mode === 'talk') listen(); return; }
+  clearChips(); me(said);
+  let ks = buildResult.themesOf(said);
+  const browserAlts = alts; alts = [];
+  if (!ks.length && raw && raw !== said) ks = buildResult.themesOf([raw, ...browserAlts].join(' '));
+  if (!ks.length && AI_URL && said) {
+    const w = bot('<span class="thinking">One moment…</span>');
+    const v = await aiInterpret(openQ, said, browserAlts.slice(0, 2));
+    if (v) ks = v.map(l => keys.find(k => TH[k].label === l)).filter(Boolean);
+    w.remove();
+  }
+  openAnswered(said, ks, false, spoke ? 'spoken' : 'typed');
+}
+async function openAnswered(text, ks, tapped, src) {
+  ready = false; composer(false, '');
+  const TH = buildResult.THEMES, areas = [...new Set(ks.flatMap(k => TH[k].areas))];
+  A.q0 = { text, themes: ks, areas }; how.q0 = tapped ? 'tapped' : (src || 'typed');
+  await typing(450);
+  if (!ks.length) { bot(text ? "Thank you, that's helpful to know. We'll keep it in mind as we go." : "That's fine. Your answers will show where to start."); return startQuestions(); }
+  const heard = cap1(list2(ks.map(k => TH[k].label)));
+  if (ks.length === 1) { bot(`${esc(heard)}: understood.`); return startQuestions(); }
+  bot(`${esc(heard)}: understood. If one of those improved first, which would make the biggest difference?`, '', 'q');
+  const box = document.createElement('div'); box.className = 'chips';
+  box.innerHTML = ks.map(k => `<button type="button" class="chip" data-k="${k}">${esc(cap1(TH[k].label))}</button>`).join('');
+  box.onclick = async e => { const b = e.target.closest('[data-k]'); if (!b) return; box.remove(); me(b.textContent);
+    const k = b.dataset.k; A.q0.first = k; A.q0.areas = [...new Set([...TH[k].areas, ...areas])];
+    await typing(350); bot("Thank you. We'll keep that front of mind."); startQuestions(); };
+  T.append(box); scrollEnd();
+}
+async function startQuestions() {
+  stage = 'questions'; await typing(350);
+  bot("I'll take you through the rest one at a time. Tap an option, type or talk, and I'll check anything I'm unsure about.", '', 'say');
+  ask();
+}
+
+// ---- voice. Whisper hears every spoken answer, including health questions. The pause after speech is short.
+// A clear rules match is accepted at once, except on a health question, which is always read back.
+// A fuzzy or AI match still asks "Is that right?".
+function canRecord() { return !!(transcribeOn && navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder); }
+function canTalk() { return !!(SR || canRecord()); }
+function needsWhisper(q) { return !!(transcribeOn && q); }
+function clearVoiceTimers() { clearTimeout(capTimer); capTimer = null; clearTimeout(silenceTimer); silenceTimer = null; }
+function micOff() { $('mic').classList.remove('on'); $('mic').setAttribute('aria-pressed', 'false'); }
+function armRecorder(id) {
+  if (!canRecord()) { recorderTask = Promise.resolve(null); return; }
+  recorderTask = navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    if (id !== session) { stream.getTracks().forEach(t => t.stop()); return null; }
+    const prefer = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'].find(t => MediaRecorder.isTypeSupported(t)) || '';
+    let recd;
+    try { recd = prefer ? new MediaRecorder(stream, { mimeType: prefer }) : new MediaRecorder(stream); }
+    catch (e) { stream.getTracks().forEach(t => t.stop()); return null; }
+    const chunks = [];
+    recd.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    try { recd.start(250); } catch (e) { stream.getTracks().forEach(t => t.stop()); return null; }
+    return { recd, stream, chunks, mime: (recd.mimeType || prefer || 'audio/webm').split(';')[0] };
+  }).catch(() => null);
+}
+function dropRecorder() {
+  const task = recorderTask; recorderTask = Promise.resolve(null);
+  Promise.resolve(task).then(m => { if (!m) return; try { if (m.recd.state !== 'inactive') m.recd.stop(); } catch (e) {} m.stream.getTracks().forEach(t => t.stop()); });
+}
+function collectRecorder(id) {
+  const task = recorderTask; recorderTask = Promise.resolve(null);
+  return Promise.resolve(task).then(m => new Promise(resolve => {
+    if (!m || id !== session) { if (m) { try { m.recd.stop(); } catch (e) {} m.stream.getTracks().forEach(t => t.stop()); } return resolve(null); }
+    const finish = () => {
+      m.stream.getTracks().forEach(t => t.stop());
+      const blob = m.chunks.length ? new Blob(m.chunks, { type: m.mime }) : null;
+      resolve(blob && blob.size > 200 ? blob : null);
+    };
+    if (m.recd.state === 'inactive') return finish();
+    m.recd.onstop = finish;
+    try { m.recd.stop(); } catch (e) { finish(); }
+  }));
+}
+function stopListen() {
+  session++; clearVoiceTimers();
+  if (rec) { const r = rec; rec = null; r.onend = null; r.onresult = null; r.onerror = null; try { r.abort(); } catch (e) {} }
+  dropRecorder(); listening = false; clipOnly = false; micOff();
+}
+async function finishListen(id) {
+  if (id !== session || !listening) return;
+  listening = false; clearVoiceTimers();
+  const text = $('txt').value.trim();
+  if (rec) { const r = rec; rec = null; r.onend = null; r.onresult = null; r.onerror = null; try { r.stop(); } catch (e) { try { r.abort(); } catch (e2) {} } }
+  const blob = await collectRecorder(id);
+  micOff();
+  if (id !== session) return;
+  clipOnly = false;
+  if (!text && !blob) return;
+  voiceClip = blob; viaVoice = true; typed();
+}
+function listen() {
+  if (listening || $('txt').disabled || !canTalk()) return;
+  const id = ++session;
+  listening = true; clipOnly = !SR; voiceClip = null; alts = [];
+  armRecorder(id); $('mic').classList.add('on'); $('mic').setAttribute('aria-pressed', 'true');
+  if (!SR) { capTimer = setTimeout(() => finishListen(id), MAX_LISTEN_MS); $('hint').textContent = 'Listening. Tap the microphone when you have finished.'; return; }
+  rec = new SR(); rec.lang = SPEECH_LANG; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 3;
+  rec.onresult = e => {
+    if (id !== session) return;
+    const finals = [...e.results].filter(r => r.isFinal);
+    $('txt').value = [...e.results].map(r => r[0].transcript).join(' ').replace(/\s+/g, ' ').trim();
+    alts = [1, 2].map(k => finals.map(row => (row[k] || row[0]).transcript).join(' ').trim()).filter(Boolean);
+    clearTimeout(silenceTimer); silenceTimer = setTimeout(() => finishListen(id), SILENCE_MS);
+  };
+  rec.onerror = e => {
+    if (id !== session) return;
+    if (/not-allowed|service-not-allowed/.test(e.error)) { stopListen(); mode = 'type'; $('hint').textContent = "We can't use the microphone here, so let's type for now."; return; }
+    if (canRecord()) { clipOnly = true; try { rec && rec.abort(); } catch (err) {} rec = null; if (!capTimer) capTimer = setTimeout(() => finishListen(id), MAX_LISTEN_MS); $('hint').textContent = 'Listening. Tap the microphone when you have finished.'; }
+  };
+  rec.onend = () => { if (id === session && listening && $('txt').value.trim()) finishListen(id); };
+  try { rec.start(); capTimer = setTimeout(() => finishListen(id), MAX_LISTEN_MS); $('hint').textContent = 'Listening. Take your time. Tap the microphone to type instead.'; }
+  catch (err) {
+    rec = null;
+    if (canRecord()) { clipOnly = true; capTimer = setTimeout(() => finishListen(id), MAX_LISTEN_MS); $('hint').textContent = 'Listening. Tap the microphone when you have finished.'; }
+    else stopListen();
+  }
+}
+function transcribePrompt(q) {
+  const opts = (q.options || []).map(label).filter(Boolean).slice(0, 16);
+  const head = String(q.text || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+  return [head, opts.join(', ')].filter(Boolean).join(', ').slice(0, 700);
+}
+function blobToBase64(blob) {
+  return new Promise(resolve => { const r = new FileReader(); r.onload = () => resolve(String(r.result).split(',')[1] || ''); r.onerror = () => resolve(''); r.readAsDataURL(blob); });
+}
+async function transcribeAudio(q, blob) {
+  if (!TRANSCRIBE_URL || !needsWhisper(q) || !blob) return '';
+  try {
+    const audio = await blobToBase64(blob); if (!audio) return '';
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 12000);
+    const res = await fetch(TRANSCRIBE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
+      body: JSON.stringify({ questionId: q.id, language: SPEECH_LANG, mime: (blob.type || 'audio/webm').split(';')[0], prompt: transcribePrompt(q), audio }) });
+    clearTimeout(t);
+    if (res.status === 503) { transcribeOn = false; return ''; }
+    if (!res.ok) return '';
+    const out = await res.json();
+    return String(out.text || '').trim().slice(0, 500);
+  } catch (err) { return ''; }
+}
+async function whisperText(q, clip, quiet) {
+  if (!clip || !needsWhisper(q)) return '';
+  const w = quiet ? null : bot('<span class="thinking">One moment…</span>');
+  const text = await transcribeAudio(q, clip);
+  if (w) w.remove();
+  return text;
+}
+
+// ---- AI matching when the answer is not already the option's own words. It may only return options from the list.
+// The member confirms a paraphrase. A health question is always read back, even when the words match.
+async function aiInterpret(q, raw, others) {
+  if (!AI_URL || !raw) return null;
+  try {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 6000);
+    const res = await fetch(AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
+      body: JSON.stringify({ questionId: q.id, question: q.text, type: q.type === 'multi' ? 'multi' : 'single', max: q.max || null, options: q.options, answer: raw.slice(0, 500), alternatives: (others || []).slice(0, 2).map(a => a.slice(0, 500)) }) });
+    clearTimeout(t);
+    if (!res.ok) return null;
+    const out = await res.json();
+    const v = (out.answer || []).filter(o => q.options.includes(o));   // never trust anything outside the list
+    if (!v.length || out.unclear) return null;
+    return q.type === 'multi' ? v.slice(0, q.max || 99) : [v[0]];
+  } catch (err) { return null; }
+}
+$('mic').onclick = () => {
+  if (listening) {
+    if (clipOnly || !SR) { finishListen(session); return; }
+    stopListen(); mode = 'type'; $('hint').textContent = 'Typing. Tap the microphone any time to talk again.'; $('txt').focus(); return;
+  }
+  if (!canTalk()) { $('hint').textContent = "Voice isn't available in this browser, so please type for now."; return; }
+  mode = 'talk'; listen();
+};
+
+function begin() {
+  stage = 'contact'; ci = 0; contact = {}; name = ''; pending = null; moreQ = null; sentRef = ''; planRef = ''; planCache = null; storyWait = null; stopListen();
+  A = {}; how = {}; qi = 0; row = 0; secShown = -1; T.innerHTML = ''; $('comp').hidden = false; $('prog').hidden = true; $('welcome').hidden = false;
+  askContact(true);
+}
+function restart() { begin(); window.scrollTo(0, 0); }
+$('send').onclick = () => { if (listening) { finishListen(session); return; } typed(); };
+$('txt').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); if (listening) finishListen(session); else typed(); return; }
+  if (listening) { stopListen(); mode = 'type'; }
+});
+begin();
+</script>

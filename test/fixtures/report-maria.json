@@ -1,0 +1,66 @@
+{
+  "headline": "You've built strong foundations. The opportunity is in the hours around them.",
+  "intro": [
+    "You told us you'd like more energy in the afternoons and to feel less wound up after work, and you chose how you eat and your mental wellbeing as the places to start.",
+    "Your answers describe deliberate routines that already work: exercise, sleep, time with people, learning. What's harder are the parts of the day nobody plans: the evening after a long day, the meal when work runs late, the hours of sitting between workouts. That's where this report focuses."
+  ],
+  "now": [
+    { "area": "Nutrition", "status": "chosen", "text": "You cook 3–5 main meals a week and include protein in two meals a day. The gap is variety and fibre: fruit and vegetables at 1–2 portions a day, beans and lentils rarely, and processed foods on 3–5 days a week, mostly when work runs late." },
+    { "area": "Sleep", "status": "strong", "text": "7–8 hours on a typical night, no regular difficulties, and most of the habits that protect sleep are already part of your routine." },
+    { "area": "Movement", "status": "strong", "text": "Exercise on 4 days a week for about 40 minutes, and strength work twice a week. The one thing worth attention is 6–8 hours of sitting on a typical day." },
+    { "area": "Mind", "status": "chosen", "text": "Work stress makes it hard to switch off in the evenings. Gardening and 2 to 3 hours a week outdoors help you settle, and you make time for hobbies." },
+    { "area": "Connection", "status": "strong", "text": "You meet friends and family every week, keep in touch by phone and take part in a group 2–3 times a month. You share meals and really listen to people." },
+    { "area": "Prevention", "status": "strong", "text": "You don't smoke or vape, drink alcohol 2–4 times a month in small amounts, had your blood pressure checked in the past 12 months and learn something new about once a week." }
+  ],
+  "ageing": {
+    "heading": "Many of the things that matter most later in life are already in place",
+    "paras": [
+      "The 2024 Lancet Commission on dementia brought together the evidence on 14 risk factors people can influence over their lives. From what you told us, you're already doing well on several of them: you're active, socially connected, keep learning, don't smoke, drink little and keep an eye on your blood pressure.",
+      "So this isn't about overhauling your life. It's about the two things you raised yourself, food variety and switching off, and one your answers point to: long stretches of sitting."
+    ],
+    "cites": ["dem_factors"]
+  },
+  "actions": [
+    {
+      "area": "Nutrition", "origin": "chosen",
+      "title": "Make your late workdays your easiest plant days",
+      "body": "Ready meals happen on the late days, when cooking from scratch isn't realistic. Rather than fighting that, make the quick option the plant-rich one: keep a late-night shelf of tinned beans or lentils, frozen vegetables and a quick wholegrain such as microwave brown rice or wholemeal wraps.",
+      "steps": [
+        "Stock the shelf at your next shop, so it's ready before the next late day.",
+        "Once a week, add beans, lentils or chickpeas to a meal. You have them rarely at the moment.",
+        "Add a portion of fruit or vegetables to a meal you already cook, on 3 days a week."
+      ],
+      "why": "More plants and fibre is what you chose, and this targets the evenings that make it hardest.",
+      "cites": ["Beans and lentils", "Balanced plate", "diet_fv"]
+    },
+    {
+      "area": "Mind", "origin": "chosen",
+      "title": "Give your workday a clear ending",
+      "body": "You told us stress makes it hard to switch off, and that being outdoors settles you. Choose a time after which work email and messages stay closed, and mark it: note what's unfinished, then spend a few minutes in the garden before you start cooking.",
+      "steps": [
+        "Pick your switch-off time and keep to it on at least 4 evenings a week.",
+        "On wet evenings, do the same at a window or with a short walk."
+      ],
+      "why": "It puts something that already helps you at the moment you find hardest.",
+      "cites": ["Time away from work"]
+    },
+    {
+      "area": "Movement", "origin": "answers",
+      "title": "Break up the sitting, not just add exercise",
+      "body": "Your exercise is already in the range the WHO recommends, so more of it isn't the point. What your answers show is 6–8 hours of sitting on a typical day. The WHO's advice is to limit sitting time and replace some of it with movement of any kind, even when you exercise regularly.",
+      "steps": [
+        "Pair 1–2 minutes of brisk movement with something that already happens, such as the end of a meeting, 3 times a day.",
+        "Take one call a day standing or walking."
+      ],
+      "why": "This came from your answers rather than your chosen areas, so it's optional. It may also help the afternoon energy you mentioned; notice for yourself whether it does.",
+      "cites": ["Movement snacks", "pa_sitting"]
+    }
+  ],
+  "keep": [
+    "Your exercise and strength work: keep the variety you enjoy.",
+    "Your sleep routine: regular bedtime, a dark, cool, quiet room and work kept out of bed.",
+    "Weekly time with friends, calls with family and your group.",
+    "Your yearly blood-pressure check and weekly learning."
+  ],
+  "next": "Your Pilot will check in with you after four weeks. Together you'll look at what stuck, what didn't fit and whether to build on it, swap it or try something new. If any of these suggestions doesn't suit you, tell us and we'll change it."
+}
